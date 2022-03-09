@@ -10,6 +10,7 @@ public class Board {
     private Scanner scanner;
     private boolean player;
     private boolean win;
+    private int moveCounter = 1;
 
     Board() {
         setBoard();
@@ -48,8 +49,9 @@ public class Board {
     }
 
     public void makeMove() {
-        Character character = ((player == false) ? 'x' : 'y');
-        System.out.println("Now it's player: " + ((player == false) ? "x" : "y") + " move");
+        Character character = ((player == false) ? 'x' : 'o');
+        System.out.println("It's " + moveCounter + " move.");
+        System.out.println("Now it's player " + ((player == false) ? "x" : "o") + " move");
         System.out.println("Please choose the tile (0-8):");
         int chosenFirstTile = scanner.nextInt();
         int chosenSecondTile = scanner.nextInt();
@@ -63,14 +65,15 @@ public class Board {
             return;
         }
 
-        if (!checkIfFullTile(chosenFirstTile) && !checkIfFullTile(chosenSecondTile)) {
-            (tileList.get(chosenFirstTile)).makeMove(character);
-            (tileList.get(chosenSecondTile)).makeMove(character);
+        if (!checkIfTileIsFull(chosenFirstTile) && !checkIfTileIsFull(chosenSecondTile)) {
+            (tileList.get(chosenFirstTile)).makeMove(new Mark(character, moveCounter));
+            (tileList.get(chosenSecondTile)).makeMove(new Mark(character, moveCounter));
             player = !player;
+            moveCounter++;
         }
     }
 
-    private boolean checkIfFullTile(int tileNumber) {
+    private boolean checkIfTileIsFull(int tileNumber) {
         if ((tileList.get(tileNumber)).marklist.size() == 9) {
             System.out.println("Tile " + tileNumber + " is full. Please choose different tile!");
             return true;

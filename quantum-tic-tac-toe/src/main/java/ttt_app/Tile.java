@@ -7,17 +7,18 @@ public class Tile {
     private boolean isColapsed;
     private boolean isEmpty;
     private boolean isEntangled;
-    public ArrayList<Character> marklist;
+    public ArrayList<Mark> marklist;
+    private Mark bigValue;
 
     Tile() {
         isColapsed = false;
         isEmpty = false;
         isEntangled = false;
-        marklist = new ArrayList<Character>();
+        marklist = new ArrayList<Mark>();
 
     }
 
-    public void makeMove(Character mark) {
+    public void makeMove(Mark mark) {
         marklist.add(mark);
     }
 
@@ -33,7 +34,8 @@ public class Tile {
         if (index >= marklist.size()) {
             System.out.print("   ");
         } else {
-            System.out.print(marklist.get(index) + "  ");
+            System.out.print((marklist.get(index)).getMark());
+            System.out.print((marklist.get(index)).getMoveNumber() + " ");
         }
     }
 
