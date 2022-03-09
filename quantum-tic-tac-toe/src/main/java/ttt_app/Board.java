@@ -29,7 +29,7 @@ public class Board {
     }
 
     public void displayBoard() {
-        System.out.println("-------------------------------");// górna krawedz
+        System.out.println("----------------------------------------");// górna krawedz
 
         for (int j = 0; j < 3; j++) {
             for (int i = 0; i < 3; i++) {
@@ -43,7 +43,7 @@ public class Board {
                 System.out.print("|");
                 System.out.println();
             }
-            System.out.println("-------------------------------");
+            System.out.println("----------------------------------------");
         }
 
     }

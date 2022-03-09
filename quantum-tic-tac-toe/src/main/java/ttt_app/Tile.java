@@ -32,10 +32,16 @@ public class Tile {
 
     private void printMark(int index) {
         if (index >= marklist.size()) {
-            System.out.print("   ");
+            System.out.print("    ");
         } else {
             System.out.print((marklist.get(index)).getMark());
-            System.out.print((marklist.get(index)).getMoveNumber() + " ");
+            System.out.print((marklist.get(index)).getMoveNumber());
+            boolean isTwoDigit = (marklist.get(index)).getMoveNumber() >= 10 ? true : false;
+            if (isTwoDigit) {
+                System.out.print(" ");
+            } else {
+                System.out.print("  ");
+            }
         }
     }
 
