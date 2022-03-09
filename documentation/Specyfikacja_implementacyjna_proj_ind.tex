@@ -1,0 +1,112 @@
+\documentclass{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage[normalem]{ulem}
+
+\useunder{\uline}{\ul}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{Michał Żdanuk}
+\fancyhead[RE,LO]{Specyfikacja implementacyjna: \texttt{Kwantowe Kółko i Krzyżyk} }
+\fancyfoot[CE,CO]{\leftmark}
+\fancyfoot[LE,RO]{\thepage}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+\rfoot{Strona \thepage \hspace{1pt} z \pageref{LastPage}}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+        \vspace*{1cm}
+        \Large    
+        \textbf{Specyfikacja implementacyjna: \texttt{Kwantowe Kółko i Krzyżyk}}
+            
+        \vspace{1.5cm}
+
+       \textbf{Michał Żdanuk}
+
+       \vfill
+            
+       \vspace{0.8cm}
+     
+       \includegraphics[width=0.4\textwidth]{pw}
+            
+       Wydział Elektryczny\\
+       Politechnika Warszawska\\
+       Marzec 2022\\
+       \vspace{0.8cm}
+        \small
+
+   \end{center}
+   
+\end{titlepage}
+\newpage
+\setcounter{page}{2}
+
+\section{Cel dokumentu}
+Dokument powstał, aby ułatwić zaprogramowanie gry w \textbf{Kwantowe Kółko i Krzyżyk}. Przybliży on ideę tworzenia programu wraz ze szczegółami implementacyjnymi.\\
+
+Dokument zawiera diagram klas wraz z ich charakterystykami, które zdefiniowałem w celu realizacji wszystkich wymagań programu. Oprócz tego w specyfikacji znajduje się krótka charakterystyka środowiska pracy, opis tego, w jaki sposób będą prowadzone prace projektowe oraz wyjaśnienie, w jaki sposób będę testować działanie programu.
+
+\begin{flushleft}\emph{Dokument ten związany jest ze \textbf{specyfikacją funkcjonalną}.}\end{flushleft}
+
+\section{Wstęp teoretyczny}
+Celem projektu jest zaprogramowanie gry, która pozwoli dwóm graczom (przy jednym urządzeniu) stoczyć pojedynek w wszystkim dobrze znanej grze jakim jest Kółko i Krzyżyk, jednakże w wersji kwantowej. Początkowo gra zostanie wykonana w wersji terminalowej(wyświetlanie planszy oraz zaznaczanie pól będzie wykonywane  przy pomocy terminalu). Po skończeniu wersji "terminalowej" gra będzie rozwinięta o interfejs graficzny (GUI).\\ 
+
+\begin{flushleft}\emph{Kompleksowy opis zasad gry "Kwantowe Kółko i Krzyżyk" z wszelkimi szczegółami znajduje się w \textbf{specyfikacji-funkcjonalnej-proj-ind}.} \end{flushleft}
+
+\section{Środowisko pracy}
+W projekcie pracował będę na własnym stanowisku roboczym w swoim domu. Poniżej prezentuję krótką specyfikację systemu i urządzenia na którym będę pracował do realizacji gry:\\
+\begin{itemize}
+    \item Windows 10 Home, Intel(R) Core(TM) i3-2310M CPU @ 2.10GHz, pamięć RAM 6GB, środowisko Visual Studio Code 
+\end{itemize}
+
+Wszelka dokumentacja powstająca przy tworzeniu projektu pisana jest z wykorzystaniem języka publikacyjnego \texttt{Latex} za pomocą narzędzia \texttt{Overleaf}.\\
+Diagram zaprezentowany w tym dokumencie został utworzony przy pomocy narzędzia \texttt{Enterprise Architect} na licencji studenckiej.
+
+\newpage
+
+\section{Opis zdefiniowanych klas}
+W celu stworzenia gry powstaną niżej wymienione klasy:
+\begin{itemize}
+    \item Tile - najmniejszy fragment systemu. Zawiera listę, w którą można wpisywać zaznaczane znaki. Posiada kilka flag: isEmpty(informująca o tym czy nie wpisano jeszcze żadnego "znaczku" w komórkę), isEntangled(informująca o tym czy komórka jest w stanie \texttt{"splątania"}), isColapsed(gdy flaga jest zapalona oznacza to, że w komórce znajduje się "duży znaczek" i nie można już edytować zawartości tej komórki).
+    \item Board - klasa zbudowana z komórek. Zawiera listę komórek, które uległy \texttt{"zawaleniu"}. Ma metody do wyświetlania planszy w okienku terminalu, sprawdzenia czy któryś z graczy wygrał po wykonanym ruchu.
+    \item Game - klasa posiadająca planszę(Board), służąca do obsługi gry. Ma informację o tym czy w aktualnej chwili gry wystąpiło \texttt{splątanie} lub \texttt{zawalenie się} komórek. Posiada także metody do sprawdzenia, czy wykonywany ruch jest poprawny, w przypadku nieprawidłowego wyświetla komunikat o błędzie wraz z wskazówką w jaki sposób wykonać poprawne posunięcie.
+    \item Mark - pomocnicza klasa służąca do przechowywania znaku (x lub o) oraz numer wykonanego ruchu
+\end{itemize}
+
+\newpage
+
+\section{Diagram klas}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{diagramKlas.png}
+    \caption{Diagram klas projektu}
+\end{figure}
+
+\newpage
+
+\section{Forma prowadzenia projektu}
+Pracę w projekcie będę wykonywać, działając na zdalnym repozytorium GIT'a. Poniżej zamieszczam link do repozytorium:
+\begin{itemize}
+    \item \url{https://github.com/MichalZdanuk/Quantum-TicTacToe}
+\end{itemize}
+Planuję, by prace były prowadzone systematycznie (tzn. co najmniej raz w ciągu dwóch tygodni w repozytorium będzie się pojawiać nowy fragment kodu, działającej części projektu).
+
+\section{Metody testowania programu}
+Testy jednostkowe metod zostaną przeprowadzone za pomocą biblioteki \texttt{JUnit}. Wykorzystane zostaną możliwości IDE, aby łatwo testować kod za pomocą specjalnych pakietów testowych. Będę chciał, aby testy były robione na bieżąco - tj. powstawały wraz z tworzonymi metodami. Planuję możliwie jak największe pokrycie kodu testami.\\ \\
+Poza automatycznymi testami jednostkowymi przeprowadzę testy statyczne (tj. przeglądanie kodu w poszukiwaniu błędów) oraz testy dynamiczne - obserwując zachowanie programu "manualnie".
+
+\end{document}

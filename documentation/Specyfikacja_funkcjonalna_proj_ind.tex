@@ -1,0 +1,214 @@
+\documentclass{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+
+\useunder{\uline}{\ul}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{Michał Żdanuk}
+\fancyhead[RE,LO]{Specyfikacja funkcjonalna: \texttt{Kwantowe Kółko i Krzyżyk} }
+\fancyfoot[CE,CO]{\leftmark}
+\fancyfoot[LE,RO]{\thepage}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+\rfoot{Strona \thepage \hspace{1pt} z \pageref{LastPage}}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+        \vspace*{1cm}
+        \Large    
+        \textbf{Specyfikacja funkcjonalna:\\ \texttt{Kwantowe Kółko i Krzyżyk}} 
+            
+        \vspace{1.5cm}
+
+       \textbf{Michał Żdanuk}
+
+       \vfill
+            
+       \vspace{0.8cm}
+     
+       \includegraphics[width=0.4\textwidth]{pw}
+            
+       Wydział Elektryczny\\
+       Politechnika Warszawska\\
+       Marzec 2022\\
+       \vspace{0.8cm}
+        \small
+
+   \end{center}
+   
+\end{titlepage}
+\newpage
+\setcounter{page}{2}
+\section{Cel dokumentu}
+Dokument powstał, by przybliżyć czytelnikowi działanie gry - \textbf{Kwantowe Kółko i Krzyżyk}. Przedstawia on także zasady rozgrywki oraz wyjaśnia zachowanie programu w zależności od działań podejmowanych przez graczy. \\
+
+Poza tym dokument zawiera: 
+\begin{itemize}
+%poprawic
+    \item szablon interfejsu graficznego okna rozgrywki z uwzględnionymi komunikatami (błędu/informacyjnymi),
+    \item schemat graficzny przykładowej planszy,
+    \item krótki scenariusz poparty grafikami mający na celu przybliżenie zasad gry,
+\end{itemize}
+
+\section{Cel projektu}
+
+Celem projektu jest napisanie programu w języku JAVA, pozwalającego na przeprowadzenie rozgrywki w okienku terminala dla dwóch graczy. W przypadku sprawnego zaimplementowania wersji "konsolowej" gra zostanie rozszerzona o możliwość zagrania w wersji "okienkowej" (tzn. z interfejsem graficznym).\\
+
+Rozgrywka w \textbf{Kwantowym Kółku i Krzyżyk} będzie przebiegać na jednym urządzeniu stacjonarnym. Gracz wybiera i zaznacza swoim znakiem odpowiednią komórkę poprzez podanie do terminalu cyfry odpowiadającej danej komórce.\\
+
+Kluczowa będzie dla mnie praca z uwzględnieniem norm programowania obiektowego tzn. poprawne korzystanie z dziedziczenia klas, agregacji czy kompozycji. Wysoki nacisk położę również na właściwe wykorzystanie podstawowych zasad obiektowości: hermetyzacji interfejsów, abstrakcji oraz hierarchizacji obiektów. 
+
+\newpage
+\section{Wstęp teoretyczny}
+
+\subsection{Zasady rozgrywki}
+\textbf{Gra Kwantowe Kółko i Krzyżyk} to uogólnienie "kwantowe" standardowej gry \texttt{Kółko i Krzyżyk}, w której ruchy graczy są "superpozycjami" ruchów z klasycznego wariantu gry. Ułożenie odpowiednich trzech znaków w rzędzie: pionowo, poziomo lub po skosie zapewnia graczowi zwycięstwo w rozgrwywce.
+
+\subsection{Wynalazcy gry}
+Za wymyślenie gry w kwantowe kółko i krzyżyk odpowiadają: \texttt{Allan Goff} oraz \texttt{Novatia Labs}.\\
+Określili oni grę jako sposób "wprowadzenia fizyki kwantowej bez użycia matematyki" równocześnie tworząc narzędzie pozwalające na bardzo podstawowe zrozumienie idei mechaniki kwantowej.
+
+\subsection{Podłoże fizyki kwantowej w rozgrywce}
+Twórcy tworząc kwantowe kółko i krzyżyk chcieli umieścić w rozgrywce koncept trzech zjawisk układów kwantowych:
+\begin{itemize}
+    \item \textbf{superpozycję (ang. superposition)} - zdolność obiektów kwantowych do bycia w dwóch miejscach jednocześnie;
+    \item \textbf{splątanie (ang. entanglement)} - zjawisko, w którym odległe obiekty systemu kwantowego wykazują korelację, której nie można wytłumaczyć żadną zależnością przyczynowo-skutkową;
+    \item \textbf{zawalanie się/rozłączanie (ang. collapse)} - zjawisko, w którym następuje redukacja stanów kwantowych do stanów klasycznych.
+\end{itemize}
+
+\subsection{Komórka}
+Komórka - najmniejszy, niezależny fragment rozgrywki. Tak samo jak w standardowej wersji gry w komórki wpisujemy znak (kółko lub krzyżyk). Różnica polega na tym, że w kwantowej wersji w jedno pole możemy wpisać wiele "małych" znaków (w szczególnym przypadku maksymalnie aż 8). Kiedy nastąpi \texttt{splątanie}, a następnie \texttt{zawalenie się} odpowiednie "małe znaki" zamienią się na stałe w "duże" znaki wówczas w każdym takim polu będzie znajdować się już tylko jeden znak.\\ \\
+
+Każda komórka może znajdować się w jednym ze ściśle określonych stanów:
+\begin{itemize}
+    \item komórka pusta (początkowa sytuacja, gdy w komórce nie jest wpisany żaden znak)
+    \item komórka wypełniona małymi znakami (sytuacja, gdy gracze wpisali już swoje znaki w komórkę, ale nie wystąpiło jeszcze \texttt{splątanie})
+    \item komórka splątana (sytuacja, gdy właśnie nastąpiło \texttt{splątanie} i gracz musi wybrać, które znaki "małe" zamienią się na stałe w "duże")
+    \item komórka po procesie "zawalenia się" (sytuacja, gdy nastąpiło \texttt{zawalenie się}; w danej komórce występuje tylko jeden znak, którego nie można zmienić)
+\end{itemize}
+
+\textbf{Uwaga!} Znaki "małe" to znaki, które są wpisywane przez graczy na początku każdej swojej tury. Znaki "duże" to znaki powstałe w procesie \texttt{zawalenia się}, których nie można już zmienić, a odpowiednie ich ułożenie zapewnia graczowi zwycięstwo.
+
+\subsection{Plansza}
+Plansza - rozbudowany element rozgrywki, który składa się z dziewięciu skorelowanych ze sobą komórek (ułożenie 3x3). W każdej turze gracz wpisuje dwa swoje znaki w komórki (\textbf{uwaga:} każdy ze znaków musi trafić do innej komórki!). W przypadku gdy wystąpi cykl (z jednej komórki można przejść do innej i wrócić z powrotem do pierwszej, ale inną ścieżką) gracz wybierze, który ze znaków "małych" zamieni się w duży. Takie działanie spowoduje "reakcję łańcuchową", ponieważ przerwany zostanie cykl i pozostałe komórki tworzące cykl wypełnią się odpowiednimi "dużymi" znakami. Poniżej prezentuję krótki scenariusz rozgrywki, gdzie nastąpi \texttt{splątanie} - w wyniku powstania cyklu:\\
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{plansza.png}
+    \caption{plansza na początku rozgrywki (przed wykonaniem pierwszego ruchu)}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{plansza_1ruch.png}
+    \caption{plansza po wykonanym pierwszym ruchu - ruch gracza x}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{plansza_2ruch.png}
+    \caption{plansza po wykonanym drugim ruchu - ruch gracza y}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{plansza_3ruch.png}
+    \caption{plansza po wykonanym trzecim ruchu (splątanie) - ruch gracza x}
+\end{figure}
+
+Cykl tworzą komórki: lewa górna, środkowa górna oraz komórka centralna:
+
+\begin{itemize}
+    \item splątana jest komórka lewa górna z komórką środkową górną poprzez x1
+    \item splątana jest komórka środkowa górna z komórką środkową centralną poprzez y2
+    \item splątana jest komórka centralna z komórką lewą górną poprzez x3
+\end{itemize}
+
+Gracz przeciwny (tzn. nie ten który utworzył cykl) wybiera, które znaki zmieniają się w "duże". Przykładowo:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{plansza_po_splataniu.png}
+    \caption{plansza po wybraniu przez gracza y "dużych" znaków}
+\end{figure}
+
+\newpage
+
+\subsection{Zakończenie rozgrywki}
+Pomyślne zakończenie rozgrywki następuje tylko w dwóch przypadkach:\\
+\begin{itemize}
+    \item gdy któryś z graczy ułoży z trzech "dużych" znaków linie pionową/poziomą/po skosie - gracz, któremu udało się to jest zwycięzcą rozgrywki
+    \item wypełnione zostaną wszystkie komórki planszy "dużymi" znakami, a żaden z graczy nie ułoży rzędu trzech znaków - żaden z graczy nie wygrywa
+\end{itemize}
+
+\textbf{UWAGA:} może wystąpić sytuacja szczególna, gdy dwóch graczy jednocześnie ułoży linie złożoną z trzech znaków! Wówczas zwycięzcą zostaje gracz, którego linia zawiera znak o mniejszym indeksie.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.2\textwidth]{plansza_wygrana.png}
+    \caption{plansza z utworzonymi liniami przez obu graczy}
+\end{figure}
+Najmniejszy indeks znaków w linii gracza x to 1, a w przypadku gracza y to 2. Zatem zwycięzcą rozgrywki zostaje gracz x.
+
+\section{Sterowanie}
+Sterowanie grą jest trywialne. Gracz by wykonać ruch jedyne co musi zrobić to podać z klawiatury w terminalu cyfrę odpowiadającą polu, które chce wybrać (cyfra z zakresu 0-8). Poniżej zaprezentowany jest schemat obrazujący przypisanie cyfr do konkretnych pól:
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.3\textwidth]{plansza_z_numeracja.png}
+
+    \caption{plansza na początku rozgrywki}
+\end{figure}
+
+W przypadku wystąpienia splątania przeciwny gracz wybiera, które znaki zmienią się w "duże".
+
+\newpage
+
+\section{Komunikaty aplikacji}
+W aplikacji komunikaty podzieliłem na dwa typy:
+\begin{itemize}
+    \item komunikaty informacyjne
+    \item komunikaty błędów
+\end{itemize}
+Komunikaty informacyjne mają na celu pomaganie graczom rozgrywki (szczególnie tym, którzy nie są zaznajomieni z zasadami rozgrywki). W konsoli na bieżąco wyświetla się komunikat z informacją czyja jest tura. W przypadku wystąpienia "zawalenia się" (patrz podsekcja 3.3) gra poinformuje gracza o tym oraz podpowie, które znaki może wybrać.
+\\ \\
+Komunikaty błędów wystąpią w przypadku wykonania przez któregoś z graczy nieprawidłowego ruchu. Przykładowe nieprawidłowe zachowania gracza:
+\begin{itemize}
+    \item gracz próbuje wybrać numer pola, który nie występuje w planszy
+    \item gracz próbuje wybrać dwa razy te same pole w jednej swojej turze
+    \item gdy wystąpi splątanie gracz próbuje wybrać pole puste lub pole, które nie wchodzi w skład cyklu
+\end{itemize}
+W każdym z powyższych scenariuszy gracz zostanie poinformowany o nieprawidłowości w jego ruchu z wyjaśnieniem w jaki sposób wykonać poprawny ruch, błędy ruch nie zostanie wykonany, a gracz zostanie poproszony o wykonanie poprawnego działania.
+
+
+\section{Testowanie programu}
+Aplikacja będzie podlegała testowaniu na dwa sposoby - testy statyczne oraz testy jednostkowe. Testy statyczne - ręczna analiza pisanego kodu będzie wykonywana konsekwentnie w ciągu trwania całego projektu. Testy jednostkowe będą powstawać po wykonaniu pełnego, niezależnego fragmentu aplikacji (np. po stworzeniu klasy Gracz wraz z całą jej funkcjonalnością) zostaną napisane testy jednostkowe do danego fragmentu kodu. Na koniec projektu nastąpi weryfikacja pokrycia kodu testami jednostkowymi. W przypadku stwierdzenia, że jakiś fragment kodu/jakaś sytuacja nie jest sprawdzana zostaną napisane dodatkowe testy uzupełniające takowe braki. Testy jednostkowe zostaną napisane przy pomocy \textbf{Maven'a} przy użyciu biblioteki \texttt{JUnit}.
+
+\newpage
+
+\section{Bibliografia}
+Do tworzenie powyższego dokumentu pomocne okazały się niżej wymienione źródła:
+
+\begin{itemize}
+    \item \url{https://en.wikipedia.org/wiki/Quantum\_tic-tac-toe}
+    \item \url{http://qttt.rohanp.xyz/}
+    \item \url{https://quantumfrontiers.com/2019/07/15/tiqtaqtoe/}
+\end{itemize}
+
+\end{document}
