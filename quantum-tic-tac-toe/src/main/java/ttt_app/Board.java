@@ -51,9 +51,21 @@ public class Board {
         Character character = ((player == false) ? 'x' : 'y');
         System.out.println("Now it's player: " + ((player == false) ? "x" : "y") + " move");
         System.out.println("Please choose the tile (0-8):");
-        int chosenTile = scanner.nextInt();
-        if (!checkIfFullTile(chosenTile)) {
-            (tileList.get(chosenTile)).makeMove(character);
+        int chosenFirstTile = scanner.nextInt();
+        int chosenSecondTile = scanner.nextInt();
+        if ((chosenFirstTile > 8) || (chosenSecondTile > 8) || (chosenFirstTile < 0) || chosenSecondTile < 0) {
+            System.out.println("You've chosen wrong tile number! Number has to be between 0 and 8");
+            return;
+        }
+
+        if (!checkIfDifferentTiles(chosenFirstTile, chosenSecondTile)) {
+            System.out.println("You've chosen same tile twice in one move! Please choose two different tiles");
+            return;
+        }
+
+        if (!checkIfFullTile(chosenFirstTile) && !checkIfFullTile(chosenSecondTile)) {
+            (tileList.get(chosenFirstTile)).makeMove(character);
+            (tileList.get(chosenSecondTile)).makeMove(character);
             player = !player;
         }
     }
@@ -61,6 +73,14 @@ public class Board {
     private boolean checkIfFullTile(int tileNumber) {
         if ((tileList.get(tileNumber)).marklist.size() == 9) {
             System.out.println("Tile " + tileNumber + " is full. Please choose different tile!");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean checkIfDifferentTiles(int firstTile, int secondTile) {
+        if (firstTile != secondTile) {
             return true;
         } else {
             return false;
