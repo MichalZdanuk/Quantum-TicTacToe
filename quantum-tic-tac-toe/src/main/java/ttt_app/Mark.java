@@ -17,4 +17,13 @@ public class Mark {
         return moveNumber;
     }
 
+    public boolean isEqual(Mark markToCompare) {
+        if ((mark == markToCompare.getMark()) && (moveNumber == markToCompare.getMoveNumber())) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 }
