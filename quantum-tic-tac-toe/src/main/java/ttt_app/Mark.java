@@ -3,10 +3,12 @@ package ttt_app;
 public class Mark {
     private Character mark;
     private int moveNumber;
+    private String markSyntax = "";
 
     Mark(Character mark, int moveNumber) {
         this.mark = mark;
         this.moveNumber = moveNumber;
+        markSyntax = mark + "" + moveNumber;
     }
 
     public Character getMark() {
@@ -24,6 +26,19 @@ public class Mark {
             return false;
         }
 
+    }
+
+    public String print() {
+        return "{" + Character.toString(mark) + "" + Integer.toString(moveNumber) + "}";
+    }
+
+    public String printColapsed() {
+        return Character.toString(mark) + "" + Integer.toString(moveNumber);
+    }
+
+    public String markSyntax() {
+        markSyntax = mark + "" + moveNumber;
+        return markSyntax;
     }
 
 }

@@ -5,14 +5,17 @@ import java.util.ArrayList;
 public class Tile {
 
     private boolean isColapsed;
+    private boolean isEntangled;
     private boolean isEmpty;
     public ArrayList<Mark> marklist;
     private Mark bigValue;
     private int numberOfTile;
+    private String printedMarks = "";
 
     Tile(int numberOfTile) {
         isColapsed = false;
         isEmpty = true;
+        isEntangled = false;
         this.numberOfTile = numberOfTile;
         marklist = new ArrayList<Mark>();
 
@@ -26,6 +29,10 @@ public class Tile {
         bigValue = new Mark(mark, moveNumber);
     }
 
+    public Mark getBigMark() {
+        return bigValue;
+    }
+
     public void makeMove(Mark mark) {
         marklist.add(mark);
         isEmpty = false;
@@ -33,6 +40,10 @@ public class Tile {
 
     public void setCollapse() {
         isColapsed = true;
+    }
+
+    public void setEntanglement() {
+        isEntangled = true;
     }
 
     private void printMark(int index) {
@@ -58,6 +69,21 @@ public class Tile {
 
     public boolean checkIfIsEmpty() {
         return isEmpty;
+    }
+
+    public boolean checkIfTileColapsed() {
+        return isColapsed;
+    }
+
+    public boolean checkIfTileEntangled() {
+        return isEntangled;
+    }
+
+    public String printAllMarks() {
+        for (int i = 0; i < marklist.size(); i++) {
+            printedMarks += marklist.get(i).print() + " ";
+        }
+        return printedMarks;
     }
 
 }
