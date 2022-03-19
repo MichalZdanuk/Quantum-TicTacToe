@@ -25,7 +25,6 @@ public class Mark {
         } else {
             return false;
         }
-
     }
 
     public String print() {
@@ -39,6 +38,15 @@ public class Mark {
     public String markSyntax() {
         markSyntax = mark + "" + moveNumber;
         return markSyntax;
+    }
+
+    public Character whichPlayer() {
+        if (mark == 'x') {
+            return 'x';
+        } else if (mark == 'o') {
+            return 'o';
+        }
+        return null;
     }
 
 }

@@ -80,6 +80,7 @@ public class Tile {
     }
 
     public String printAllMarks() {
+        printedMarks = "";
         for (int i = 0; i < marklist.size(); i++) {
             printedMarks += marklist.get(i).print() + " ";
         }

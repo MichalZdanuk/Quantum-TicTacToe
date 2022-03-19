@@ -22,9 +22,9 @@ public class Game {
 
         gameBoard.displayBoard();
 
-        while (true) {
+        while ((!gameBoard.checkIfWinner()) && (!gameBoard.checkIfDraw())) {
             gameBoard.makeMove();
-            gameBoard.newDisplayBoard();
+            gameBoard.displayBoard();
             if (gameBoard.checkIfIsEntanglement()) {
                 gameBoard.whichPlayer();
                 System.out.print("Entanglement occured! Please choose one from entangled tiles: ");
@@ -48,11 +48,14 @@ public class Game {
                     chosenMark = scanner.nextLine();
                 }
                 gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)));
-                gameBoard.newDisplayBoard();
+                gameBoard.displayBoard();
             }
-
         }
-
+        if (gameBoard.draw) {
+            System.out.println("Draw!!!Nobody wins");
+            return;
+        }
+        gameBoard.printWinner();
     }
 
     private static boolean validateChosenMark(String chosenMark, Tile chosenTile) {
@@ -65,6 +68,13 @@ public class Game {
     }
 
     private static boolean validateChosenTile(String tile, Board board) {
+        if (tile.length() != 1) {
+            return false;
+        }
+
+        if (!Character.isDigit(tile.charAt(0))) {
+            return false;
+        }
         ArrayList<Integer> listOfNumbersToCheck = board.entangledTilesNumbers();
         for (int i = 0; i < board.getSize(); i++) {
             if (listOfNumbersToCheck.get(i) == Integer.parseInt(tile)) {
