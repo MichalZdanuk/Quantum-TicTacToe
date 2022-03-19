@@ -26,8 +26,11 @@ public class Game {
             gameBoard.makeMove();
             gameBoard.displayBoard();
             if (gameBoard.checkIfIsEntanglement()) {
+                gameBoard.changePlayer();
                 gameBoard.whichPlayer();
-                System.out.print("Entanglement occured! Please choose one from entangled tiles: ");
+                System.out.print("Entanglement occured! ");
+                gameBoard.printChainOfTiles();
+                System.out.println("Please choose one from entangled tiles: ");
                 gameBoard.printListOfEntangledTiles();
                 System.out.print("\n");
                 chosenTile = scanner.nextLine();
@@ -49,6 +52,10 @@ public class Game {
                 }
                 gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)));
                 gameBoard.displayBoard();
+                gameBoard.changePlayer();
+            }
+            if (!gameBoard.isMistake) {
+                gameBoard.changePlayer();
             }
         }
         if (gameBoard.draw) {
@@ -98,5 +105,4 @@ public class Game {
                 "5. To win a game you have to place three big marks in horizontal/vertical/diagonal line \n(same as classical tic-tac-toe).");
         System.out.println("Good luck!");
     }
-
 }

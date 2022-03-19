@@ -1,6 +1,7 @@
 package ttt_app;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class Board {
@@ -22,6 +23,7 @@ public class Board {
     private ArrayList<Mark> restMarks = new ArrayList<Mark>();
     private Tile connectedTile;
     private ArrayList<Mark> usedMarks = new ArrayList<Mark>();
+    public boolean isMistake = false;
 
     Board() {
         setBoard();
@@ -123,7 +125,12 @@ public class Board {
         System.out.println();
     }
 
+    public void changePlayer() {
+        player = !player;
+    }
+
     public void makeMove() {
+        isMistake = false;
         Character character = ((player == false) ? 'x' : 'o');
         System.out.println("It's " + moveCounter + " move.");
         whichPlayer();
@@ -133,25 +140,27 @@ public class Board {
         String secondScanned = scanner.nextLine();
         if (firstScanned.length() != 1 && firstScanned.length() != 1) {
             System.out.println("Please give a number between 0 and 8!");
+            isMistake = true;
             return;
         }
 
         boolean flag = Character.isDigit(firstScanned.charAt(0)) && Character.isDigit(secondScanned.charAt(0));
         if (!flag) {
             System.out.println("Please give a digit between 0 and 8!");
+            isMistake = true;
             return;
         }
 
         int chosenFirstTile = Integer.parseInt(firstScanned);
         int chosenSecondTile = Integer.parseInt(secondScanned);
         if (!validateGivenTiles(chosenFirstTile, chosenSecondTile)) {
+            isMistake = true;
             return;
         }
 
         if (!checkIfChosenTileIsFull(chosenFirstTile) && !checkIfChosenTileIsFull(chosenSecondTile)) {
-            (tileList.get(chosenFirstTile)).makeMove(new Mark(character, moveCounter));
-            (tileList.get(chosenSecondTile)).makeMove(new Mark(character, moveCounter));
-            player = !player;
+            (tileList.get(chosenFirstTile)).putMark(new Mark(character, moveCounter));
+            (tileList.get(chosenSecondTile)).putMark(new Mark(character, moveCounter));
             moveCounter++;
         }
     }
@@ -287,9 +296,23 @@ public class Board {
     }
 
     public void printListOfEntangledTiles() {
+        ArrayList<Integer> sortedListOfEntangledTiles = new ArrayList<Integer>();
         for (int i = 0; i < entangledTilesList.size(); i++) {
-            System.out.print("{" + entangledTilesList.get(i).getNumberOfTile() + "} ");
+            sortedListOfEntangledTiles.add(entangledTilesList.get(i).getNumberOfTile());
         }
+        Collections.sort(sortedListOfEntangledTiles);
+        for (int i = 0; i < entangledTilesList.size(); i++) {
+            System.out.print("{" + sortedListOfEntangledTiles.get(i) + "} ");
+        }
+    }
+
+    public void printChainOfTiles() {
+        String msg = "";
+        for (int i = 0; i < entangledTilesList.size(); i++) {
+            msg += "{" + entangledTilesList.get(i).getNumberOfTile() + "}-->";
+        }
+        msg = msg.substring(0, msg.length() - 3);
+        System.out.println(msg);
     }
 
     public ArrayList<Integer> entangledTilesNumbers() {
@@ -372,7 +395,6 @@ public class Board {
     }
 
     public void printWinner() {
-        System.out.println("Congratulations to player: " + ((player == false) ? "o" : "x") + " who has won game");
+        System.out.println("Congratulations to player: " + processedPlayer + " who has won game");
     }
-
 }

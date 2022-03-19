@@ -33,7 +33,7 @@ public class Tile {
         return bigValue;
     }
 
-    public void makeMove(Mark mark) {
+    public void putMark(Mark mark) {
         marklist.add(mark);
         isEmpty = false;
     }
@@ -86,5 +86,4 @@ public class Tile {
         }
         return printedMarks;
     }
-
 }
