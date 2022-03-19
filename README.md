@@ -8,7 +8,7 @@ Rules:
 3. When after one player's move occures entanglement then second player choose tile and mark to be collapsed here.
 4. Collapsed tiles with chosen mark evolve to big marks.
 5. To win a game you have to place three big marks in horizontal/vertical/diagonal line (same as classical tic-tac-toe).
-Good luck!
+Good luck!!!
 
 Below example of a game:
 
