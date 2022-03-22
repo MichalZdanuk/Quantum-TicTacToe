@@ -24,6 +24,7 @@ public class Game {
 
         while ((!gameBoard.checkIfWinner()) && (!gameBoard.checkIfDraw())) {
             gameBoard.makeMove();
+            System.out.println("d");
             gameBoard.displayBoard();
             if (gameBoard.checkIfIsEntanglement()) {
                 gameBoard.changePlayer();
@@ -41,12 +42,26 @@ public class Game {
                     chosenTile = scanner.nextLine();
                 }
                 System.out.println();
-                System.out.println("Choose a mark to be collapsed on tile: " + chosenTile + " from "
-                        + gameBoard.tileList.get(Integer.parseInt(chosenTile)).printAllMarks());
+                System.out.println("Choose a mark to be collapsed on tile: " + chosenTile + " from");
+                for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
+                    for (Mark markInEntanglement : gameBoard.marksInEntanglementList) {
+                        if (mark.markSyntax().equals(markInEntanglement.markSyntax())) {
+                            System.out.print(" {" + markInEntanglement.markSyntax() + "}");
+                        }
+                    }
+                }
+                System.out.println();
                 chosenMark = scanner.nextLine();
-                while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)))) {
-                    System.out.print("You' ve chosen wrong mark! Choose one from: "
-                            + gameBoard.tileList.get(Integer.parseInt(chosenTile)).printAllMarks());
+                while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)),
+                        gameBoard)) {
+                    System.out.print("You' ve chosen wrong mark! Choose one from: ");
+                    for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
+                        for (Mark markInEntanglement : gameBoard.marksInEntanglementList) {
+                            if (mark.markSyntax().equals(markInEntanglement.markSyntax())) {
+                                System.out.print(" {" + markInEntanglement.markSyntax() + "}");
+                            }
+                        }
+                    }
                     System.out.print("\n");
                     chosenMark = scanner.nextLine();
                 }
@@ -65,9 +80,19 @@ public class Game {
         gameBoard.printWinner();
     }
 
-    private static boolean validateChosenMark(String chosenMark, Tile chosenTile) {
+    private static boolean validateChosenMark(String chosenMark, Tile chosenTile, Board board) {
+        System.out.println("elo");
         for (int i = 0; i < chosenTile.marklist.size(); i++) {
-            if (chosenTile.marklist.get(i).markSyntax().equals(chosenMark)) {
+            if (chosenTile.marklist.get(i).markSyntax().equals(chosenMark) && isMarkEntangled(chosenMark, board)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isMarkEntangled(String markToBeChecked, Board board) {
+        for (Mark mark : board.marksInEntanglementList) {
+            if (mark.markSyntax().equals(markToBeChecked)) {
                 return true;
             }
         }

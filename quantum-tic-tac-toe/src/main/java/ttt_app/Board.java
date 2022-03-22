@@ -12,7 +12,7 @@ public class Board {
     private int moveCounter = 1;
     private int startingTileNumber;
     private ArrayList<Tile> entangledTilesList = new ArrayList<Tile>(0);
-    private ArrayList<Mark> marksInEntanglementList = new ArrayList<Mark>(0);
+    public ArrayList<Mark> marksInEntanglementList = new ArrayList<Mark>(0);
     private ArrayList<Tile> availableTiles = new ArrayList<Tile>(0);
     private boolean isEntanglement = false;
     private Tile nextTile;
@@ -251,6 +251,11 @@ public class Board {
                     return;
                 } else {
                     entangledTilesList.add(nextTile);
+                    if (!isDifferentMark(mark, nextTile)) {
+                        marksInEntanglementList.remove(mark);
+                        entangledTilesList.remove(nextTile);
+                        continue;
+                    }
                     searchForEntanglement(nextTile);
 
                 }
@@ -262,6 +267,16 @@ public class Board {
                 entangledTilesList.clear();
             }
         }
+    }
+
+    private boolean isDifferentMark(Mark mark, Tile tile) {
+        for (Mark comparedMark : tile.marklist) {
+            if (!comparedMark.isEqual(mark)) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     private boolean findSameMarkInDifferentTile(Mark mark, Tile tile) {
@@ -328,7 +343,8 @@ public class Board {
     }
 
     public void resolveEntanglement(String chosenMark, Tile tile) {
-        usedMarks.add(new Mark(chosenMark.charAt(0), Integer.parseInt(chosenMark.replaceAll("[\\D]", ""))));
+        Mark firstMark = new Mark(chosenMark.charAt(0), Integer.parseInt(chosenMark.replaceAll("[\\D]", "")));
+        usedMarks.add(firstMark);
         tile.setBigMark(chosenMark.charAt(0), Integer.parseInt(chosenMark.replaceAll("[\\D]", "")));
         tile.setCollapse();
         createListOfRestMarks(chosenMark, tile);
