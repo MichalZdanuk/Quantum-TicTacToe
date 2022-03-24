@@ -30,6 +30,7 @@ public class Board {
         player = false;
         scanner = new Scanner(System.in);
     }
+    
 
     public boolean checkIfWinner() {
         for (int i = 0; i < 2; i++) {
