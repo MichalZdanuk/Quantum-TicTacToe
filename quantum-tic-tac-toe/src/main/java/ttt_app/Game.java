@@ -9,16 +9,18 @@ public class Game {
     private static Scanner scanner = new Scanner(System.in);
     private static String chosenTile = "";
     private static String chosenMark = "";
+    private static String mode = "";
 
     public static void main(String[] args) {
         Board gameBoard = new Board();
-        printGameRules();
         try {
             URL myUrl = new URL("https://github.com/MichalZdanuk/Quantum-TicTacToe");
             System.out.println(myUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        printGameRules();
+        chooseGameMode();
 
         gameBoard.displayBoard();
 
@@ -81,7 +83,6 @@ public class Game {
     }
 
     private static boolean validateChosenMark(String chosenMark, Tile chosenTile, Board board) {
-        System.out.println("elo");
         for (int i = 0; i < chosenTile.marklist.size(); i++) {
             if (chosenTile.marklist.get(i).markSyntax().equals(chosenMark) && isMarkEntangled(chosenMark, board)) {
                 return true;
@@ -129,5 +130,24 @@ public class Game {
         System.out.println(
                 "5. To win a game you have to place three big marks in horizontal/vertical/diagonal line \n(same as classical tic-tac-toe).");
         System.out.println("Good luck!");
+    }
+
+    private static void chooseGameMode() {
+        System.out.println("\nPlease choose game mode!");
+        System.out.println("Type \"single\" to play against bot or \"multi\" to play against player");
+        mode = scanner.nextLine();
+        while (!validateMode(mode)) {
+            System.out.println("Chosen wrong mode choose: single or multi");
+            mode = scanner.nextLine();
+        }
+
+    }
+
+    private static boolean validateMode(String mode) {
+        if (mode.equals("single") || mode.equals("multi")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

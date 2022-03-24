@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ttt_app.AppTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.118 s - in ttt_app.AppTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.141 s - in ttt_app.AppTest

@@ -230,12 +230,33 @@ public class Board {
                 for (int i = 0; i < entangledTilesList.size(); i++) {
                     tileList.get(entangledTilesList.get(i).getNumberOfTile()).setEntanglement();
                 }
+                correctMarksInEntanglementList();
                 return true;
             } else {
                 continue;
             }
         }
         return isEntanglement;
+    }
+
+    private void correctMarksInEntanglementList() {
+        int counter = 0;
+        for (Mark mark : marksInEntanglementList) {
+            for (Tile tile : entangledTilesList) {
+                for (Mark markInTile : tile.marklist) {
+                    if (markInTile.isEqual(mark)) {
+                        counter++;
+                    }
+                }
+            }
+            if (counter == 2) {
+                counter = 0;
+                continue;
+            } else {
+                marksInEntanglementList.remove(mark);
+            }
+            counter = 0;
+        }
     }
 
     private void searchForEntanglement(Tile tile) {

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="ttt_app.AppTest" time="0.118" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="ttt_app.AppTest" time="0.141" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1250"/>
-    <property name="java.class.path" value="C:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\test-classes;C:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\classes;C:\Users\Michal\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\Michal\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
+    <property name="java.class.path" value="c:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\test-classes;c:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\classes;C:\Users\Michal\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\Michal\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
     <property name="java.vm.vendor" value="Eclipse Adoptium"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
@@ -15,9 +15,9 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="PL"/>
     <property name="sun.boot.library.path" value="C:\Users\Michal\AppData\Local\Programs\Eclipse Adoptium\jdk-17.0.2.8-hotspot\bin"/>
-    <property name="sun.java.command" value="C:\Users\Michal\AppData\Local\Temp\surefire7215051055195613995\surefirebooter4652102947417452498.jar C:\Users\Michal\AppData\Local\Temp\surefire7215051055195613995 2022-03-19T14-22-15_250-jvmRun1 surefire10785804936640635862tmp surefire_04721140407514701861tmp"/>
+    <property name="sun.java.command" value="C:\Users\Michal\AppData\Local\Temp\surefire11833781122473636255\surefirebooter8028223551546975135.jar C:\Users\Michal\AppData\Local\Temp\surefire11833781122473636255 2022-03-22T01-16-27_108-jvmRun1 surefire17757053364508825059tmp surefire_06363487198839422466tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="C:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\test-classes;C:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\classes;C:\Users\Michal\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\Michal\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
+    <property name="surefire.test.class.path" value="c:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\test-classes;c:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe\target\classes;C:\Users\Michal\.m2\repository\junit\junit\4.11\junit-4.11.jar;C:\Users\Michal\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="C:\Users\Michal"/>
     <property name="user.language" value="pl"/>
@@ -25,12 +25,12 @@
     <property name="java.version.date" value="2022-01-18"/>
     <property name="java.home" value="C:\Users\Michal\AppData\Local\Programs\Eclipse Adoptium\jdk-17.0.2.8-hotspot"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="C:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe"/>
+    <property name="basedir" value="c:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe"/>
     <property name="java.vm.compressedOopsMode" value="32-bit"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\Michal\AppData\Local\Temp\surefire7215051055195613995\surefirebooter4652102947417452498.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\Michal\AppData\Local\Temp\surefire11833781122473636255\surefirebooter8028223551546975135.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="17.0.2+8"/>
@@ -45,7 +45,7 @@
     <property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
     <property name="java.io.tmpdir" value="C:\Users\Michal\AppData\Local\Temp\"/>
     <property name="java.version" value="17.0.2"/>
-    <property name="user.dir" value="C:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe"/>
+    <property name="user.dir" value="c:\Users\Michal\Desktop\SEM_IV\Projekt_indywidualny\Quantum-TicTacToe\quantum-tic-tac-toe"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
@@ -57,5 +57,5 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="61.0"/>
   </properties>
-  <testcase name="shouldAnswerWithTrue" classname="ttt_app.AppTest" time="0.004"/>
+  <testcase name="shouldAnswerWithTrue" classname="ttt_app.AppTest" time="0.006"/>
 </testsuite>
