@@ -2,16 +2,18 @@ package ttt_app;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class Board {
 
     public ArrayList<Tile> tileList;
     private Scanner scanner;
     private boolean player;
-    private int moveCounter = 1;
+    private int roundNumber = 1;
     private int startingTileNumber;
-    private ArrayList<Tile> entangledTilesList = new ArrayList<Tile>(0);
+    public ArrayList<Tile> entangledTilesList = new ArrayList<Tile>(0);
     public ArrayList<Mark> marksInEntanglementList = new ArrayList<Mark>(0);
     private ArrayList<Tile> availableTiles = new ArrayList<Tile>(0);
     private boolean isEntanglement = false;
@@ -24,6 +26,10 @@ public class Board {
     private Tile connectedTile;
     private ArrayList<Mark> usedMarks = new ArrayList<Mark>();
     public boolean isMistake = false;
+
+    private int botFirstTile;
+    private int botSecondTile;
+    private Random rnd = new Random();
 
     Board() {
         setBoard();
@@ -129,55 +135,81 @@ public class Board {
         player = !player;
     }
 
-    public void makeMove() {
+    public void makeMove(String mode) {
         isMistake = false;
         Character character = ((player == false) ? 'x' : 'o');
-        System.out.println("It's " + moveCounter + " move.");
-        whichPlayer();
+        if ((mode.equals("single") && (roundNumber % 2 == 0))) {
+            System.out.println("--------BOT MOVE--------");
+        }
+        System.out.println("It's " + roundNumber + " move.");
+        System.out.println("It's player " + whichPlayerTurn() + " turn");
         System.out.println("Please choose the tile (0-8):");
 
-        String firstScanned = scanner.nextLine();
-        String secondScanned = scanner.nextLine();
-        if (firstScanned.length() != 1 && firstScanned.length() != 1) {
-            System.out.println("Please give a number between 0 and 8!");
-            isMistake = true;
-            return;
-        }
+        if (mode.equals("multi") || (mode.equals("single") && (roundNumber % 2 == 1))) {
+            String firstScanned = scanner.nextLine();
+            String secondScanned = scanner.nextLine();
 
-        boolean flag = Character.isDigit(firstScanned.charAt(0)) && Character.isDigit(secondScanned.charAt(0));
-        if (!flag) {
-            System.out.println("Please give a digit between 0 and 8!");
-            isMistake = true;
-            return;
-        }
+            if (firstScanned.length() != 1 && firstScanned.length() != 1) {
+                System.out.println("Please give a number between 0 and 8!");
+                isMistake = true;
+                return;
+            }
 
-        int chosenFirstTile = Integer.parseInt(firstScanned);
-        int chosenSecondTile = Integer.parseInt(secondScanned);
-        if (!validateGivenTiles(chosenFirstTile, chosenSecondTile)) {
-            isMistake = true;
-            return;
-        }
+            boolean flag = Character.isDigit(firstScanned.charAt(0)) && Character.isDigit(secondScanned.charAt(0));
+            if (!flag) {
+                System.out.println("Please give a digit between 0 and 8!");
+                isMistake = true;
+                return;
+            }
 
-        if (!checkIfChosenTileIsFull(chosenFirstTile) && !checkIfChosenTileIsFull(chosenSecondTile)) {
-            (tileList.get(chosenFirstTile)).putMark(new Mark(character, moveCounter));
-            (tileList.get(chosenSecondTile)).putMark(new Mark(character, moveCounter));
-            moveCounter++;
+            int chosenFirstTile = Integer.parseInt(firstScanned);
+            int chosenSecondTile = Integer.parseInt(secondScanned);
+            if (!validateGivenTiles(chosenFirstTile, chosenSecondTile, mode)) {
+                isMistake = true;
+                return;
+            }
+
+            if (!checkIfChosenTileIsFull(chosenFirstTile, mode) && !checkIfChosenTileIsFull(chosenSecondTile, mode)) {
+                (tileList.get(chosenFirstTile)).putMark(new Mark(character, roundNumber));
+                (tileList.get(chosenSecondTile)).putMark(new Mark(character, roundNumber));
+                roundNumber++;
+            }
+        } else if (mode.equals("single")) {
+            delay();
+            botFirstTile = rnd.nextInt(9);
+            botSecondTile = rnd.nextInt(9);
+            while (!validateGivenTiles(botFirstTile, botSecondTile, mode)
+                    && !checkIfChosenTileIsFull(botFirstTile, mode)
+                    && !checkIfChosenTileIsFull(botSecondTile, mode)) {
+                botFirstTile = rnd.nextInt(9);
+                botSecondTile = rnd.nextInt(9);
+            }
+            (tileList.get(botFirstTile)).putMark(new Mark(character, roundNumber));
+            (tileList.get(botSecondTile)).putMark(new Mark(character, roundNumber));
+            roundNumber++;
+
         }
     }
 
-    private boolean validateGivenTiles(int chosenFirstTile, int chosenSecondTile) {
+    private boolean validateGivenTiles(int chosenFirstTile, int chosenSecondTile, String mode) {
         if ((chosenFirstTile > 8) || (chosenSecondTile > 8) || (chosenFirstTile < 0) || chosenSecondTile < 0) {
-            System.out.println("You've chosen wrong tile number! Number has to be between 0 and 8");
+            if (mode.equals("multi")) {
+                System.out.println("You've chosen wrong tile number! Number has to be between 0 and 8");
+            }
             return false;
         }
 
         if (!checkIfDifferentTiles(chosenFirstTile, chosenSecondTile)) {
-            System.out.println("You've chosen same tile twice in one move! Please choose two different tiles");
+            if (mode.equals("multi")) {
+                System.out.println("You've chosen same tile twice in one move! Please choose two different tiles");
+            }
             return false;
         }
 
         if (checkIfChosenTileIsCollapsed(chosenFirstTile, chosenSecondTile)) {
-            System.out.println("You've chosen collapsed tile! Please choose different tile");
+            if (mode.equals("multi")) {
+                System.out.println("You've chosen collapsed tile! Please choose different tile");
+            }
             return false;
         }
         return true;
@@ -192,9 +224,11 @@ public class Board {
         }
     }
 
-    private boolean checkIfChosenTileIsFull(int tileNumber) {
+    private boolean checkIfChosenTileIsFull(int tileNumber, String mode) {
         if ((tileList.get(tileNumber)).marklist.size() == 9) {
-            System.out.println("Tile " + tileNumber + " is full. Please choose different tile!");
+            if (mode.equals("multi")) {
+                System.out.println("Tile " + tileNumber + " is full. Please choose different tile!");
+            }
             return true;
         } else {
             return false;
@@ -216,24 +250,30 @@ public class Board {
         }
     }
 
+    int additionalFlag = 0;
+
     public boolean checkIfIsEntanglement() {
+        additionalFlag = 0;
         availableTiles.clear();
         createListOfAvailableTiles(tileList);
         for (Tile komorka : availableTiles) {
-            marksInEntanglementList.clear();
-            entangledTilesList.clear();
-            startingTileNumber = komorka.getNumberOfTile();
-            entangledTilesList.add(komorka);
+            if (additionalFlag == 0) {
+                marksInEntanglementList.clear();
+                entangledTilesList.clear();
+                startingTileNumber = komorka.getNumberOfTile();
+                entangledTilesList.add(komorka);
 
-            searchForEntanglement(komorka);
-            if (isEntanglement) {
-                for (int i = 0; i < entangledTilesList.size(); i++) {
-                    tileList.get(entangledTilesList.get(i).getNumberOfTile()).setEntanglement();
+                searchForEntanglement(komorka);
+                if (isEntanglement) {
+                    for (int i = 0; i < entangledTilesList.size(); i++) {
+                        tileList.get(entangledTilesList.get(i).getNumberOfTile()).setEntanglement();
+                    }
+                    correctMarksInEntanglementList();// maybe not useful now
+                    additionalFlag = 0;
+                    return true;
+                } else {
+                    continue;
                 }
-                correctMarksInEntanglementList();
-                return true;
-            } else {
-                continue;
             }
         }
         return isEntanglement;
@@ -261,33 +301,39 @@ public class Board {
 
     private void searchForEntanglement(Tile tile) {
         for (Mark mark : tile.marklist) {
-            if (checkIfMarkIsOnPossibleEntanglementList(mark)) {
-                continue;
-            }
+            if (additionalFlag == 0) {
 
-            if (findSameMarkInDifferentTile(mark, tile)) {
-                marksInEntanglementList.add(mark);
-                if (startingTileNumber == nextTile.getNumberOfTile()) {
-                    isEntanglement = true;
-                    return;
-                } else {
-                    entangledTilesList.add(nextTile);
-                    if (!isDifferentMark(mark, nextTile)) {
-                        marksInEntanglementList.remove(mark);
-                        entangledTilesList.remove(nextTile);
-                        continue;
+                if (checkIfMarkIsOnPossibleEntanglementList(mark)) {
+                    continue;
+                }
+
+                if (findSameMarkInDifferentTile(mark, tile)) {
+                    marksInEntanglementList.add(mark);
+                    if (startingTileNumber == nextTile.getNumberOfTile()) {
+                        isEntanglement = true;
+                        additionalFlag = 1;
+                        return;
+                    } else {
+                        entangledTilesList.add(nextTile);
+                        if (!isDifferentMark(mark, nextTile)) {
+                            marksInEntanglementList.remove(mark);
+                            entangledTilesList.remove(nextTile);
+                            continue;
+                        }
+                        searchForEntanglement(nextTile);
+
                     }
-                    searchForEntanglement(nextTile);
-
+                    if (isEntanglement == false) {
+                        entangledTilesList.remove(entangledTilesList.size() - 1);
+                        marksInEntanglementList.remove(mark);
+                    }
+                } else {
+                    marksInEntanglementList.clear();
+                    entangledTilesList.clear();
                 }
-                if (isEntanglement == false) {
-                    entangledTilesList.remove(entangledTilesList.size() - 1);
-                }
-            } else {
-                marksInEntanglementList.clear();
-                entangledTilesList.clear();
             }
         }
+
     }
 
     private boolean isDifferentMark(Mark mark, Tile tile) {
@@ -427,11 +473,20 @@ public class Board {
         }
     }
 
-    public void whichPlayer() {
-        System.out.println("Now it's player " + ((player == false) ? "x" : "o") + " move");
+    public Character whichPlayerTurn() {
+        return ((player == false) ? 'x' : 'o');
     }
 
-    public void printWinner() {
-        System.out.println("Congratulations to player: " + processedPlayer + " who has won game");
+    public int isBot() {
+        return ((player == false) ? 0 : 1);
     }
+
+    public void delay() {
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

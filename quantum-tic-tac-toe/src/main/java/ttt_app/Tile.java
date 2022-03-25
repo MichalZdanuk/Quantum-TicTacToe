@@ -10,7 +10,7 @@ public class Tile {
     public ArrayList<Mark> marklist;
     private Mark bigValue;
     private int numberOfTile;
-    private String printedMarks = "";
+   // private String printedMarks = "";
 
     Tile(int numberOfTile) {
         isColapsed = false;
@@ -79,11 +79,11 @@ public class Tile {
         return isEntangled;
     }
 
-    public String printAllMarks() {
+   /* public String printAllMarks() {
         printedMarks = "";
         for (int i = 0; i < marklist.size(); i++) {
             printedMarks += marklist.get(i).print() + " ";
         }
         return printedMarks;
-    }
+    }*/
 }

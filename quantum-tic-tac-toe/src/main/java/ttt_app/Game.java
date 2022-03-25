@@ -3,6 +3,7 @@ package ttt_app;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
@@ -10,6 +11,8 @@ public class Game {
     private static String chosenTile = "";
     private static String chosenMark = "";
     private static String mode = "";
+    private static int index;
+    static Random rnd = new Random();
 
     public static void main(String[] args) {
         Board gameBoard = new Board();
@@ -25,24 +28,38 @@ public class Game {
         gameBoard.displayBoard();
 
         while ((!gameBoard.checkIfWinner()) && (!gameBoard.checkIfDraw())) {
-            gameBoard.makeMove();
-            System.out.println("d");
+            gameBoard.makeMove(mode);
             gameBoard.displayBoard();
             if (gameBoard.checkIfIsEntanglement()) {
                 gameBoard.changePlayer();
-                gameBoard.whichPlayer();
+                if ((mode.equals("single") && (gameBoard.isBot() == 1))) {
+                    System.out.println("--------BOT MOVE--------");
+                }
+                System.out.println("Player " + gameBoard.whichPlayerTurn() + " turn");
                 System.out.print("Entanglement occured! ");
                 gameBoard.printChainOfTiles();
                 System.out.println("Please choose one from entangled tiles: ");
                 gameBoard.printListOfEntangledTiles();
                 System.out.print("\n");
-                chosenTile = scanner.nextLine();
-                while (!validateChosenTile(chosenTile, gameBoard)) {
-                    System.out.print("You' ve chosen wrong tile! Chose one from: ");
-                    gameBoard.printListOfEntangledTiles();
-                    System.out.print("\n");
+                if (mode.equals("multi") || (mode.equals("single") && (gameBoard.isBot() == 0))) {
                     chosenTile = scanner.nextLine();
+                    while (!validateChosenTile(chosenTile, gameBoard)) {
+                        System.out.print("You' ve chosen wrong tile! Chose one from: ");
+                        gameBoard.printListOfEntangledTiles();
+                        System.out.print("\n");
+                        chosenTile = scanner.nextLine();
+                    }
+                } else if (mode.equals("single")) {
+                    index = rnd.nextInt(gameBoard.entangledTilesList.size());
+                    chosenTile = Integer.toString(gameBoard.entangledTilesList.get(index).getNumberOfTile());
+                    while (!validateChosenTile(chosenTile, gameBoard)) {
+                        index = rnd.nextInt(gameBoard.entangledTilesList.size());
+                        chosenTile = Integer.toString(gameBoard.entangledTilesList.get(index).getNumberOfTile());
+                    }
+                    gameBoard.delay();
+                    System.out.println("Bot has chosen: " + chosenTile);
                 }
+
                 System.out.println();
                 System.out.println("Choose a mark to be collapsed on tile: " + chosenTile + " from");
                 for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
@@ -53,20 +70,38 @@ public class Game {
                     }
                 }
                 System.out.println();
-                chosenMark = scanner.nextLine();
-                while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)),
-                        gameBoard)) {
-                    System.out.print("You' ve chosen wrong mark! Choose one from: ");
-                    for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
-                        for (Mark markInEntanglement : gameBoard.marksInEntanglementList) {
-                            if (mark.markSyntax().equals(markInEntanglement.markSyntax())) {
-                                System.out.print(" {" + markInEntanglement.markSyntax() + "}");
+                if (mode.equals("multi") || (mode.equals("single") && ((gameBoard.isBot() == 0)))) {
+                    chosenMark = scanner.nextLine();
+                    while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)),
+                            gameBoard)) {
+                        System.out.print("You' ve chosen wrong mark! Choose one from: ");
+                        for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
+                            for (Mark markInEntanglement : gameBoard.marksInEntanglementList) {
+                                if (mark.markSyntax().equals(markInEntanglement.markSyntax())) {
+                                    System.out.print(" {" + markInEntanglement.markSyntax() + "}");
+                                }
                             }
                         }
+                        System.out.print("\n");
+                        chosenMark = scanner.nextLine();
                     }
-                    System.out.print("\n");
-                    chosenMark = scanner.nextLine();
+                } else if (mode.equals("single")) {
+                    index = rnd.nextInt(gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.size());
+                    chosenMark = gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.get(index)
+                            .markSyntax();
+                    while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)),
+                            gameBoard)) {
+                        index = rnd
+                                .nextInt(gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.size());
+                        chosenMark = gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.get(index)
+                                .markSyntax();
+
+                    }
+
+                    gameBoard.delay();
+                    System.out.println("Bot has chosen: " + chosenMark);
                 }
+
                 gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)));
                 gameBoard.displayBoard();
                 gameBoard.changePlayer();
@@ -79,7 +114,8 @@ public class Game {
             System.out.println("Draw!!!Nobody wins");
             return;
         }
-        gameBoard.printWinner();
+        gameBoard.changePlayer();
+        System.out.println("Congratulations to player " + gameBoard.whichPlayerTurn() + " who has won!!!");
     }
 
     private static boolean validateChosenMark(String chosenMark, Tile chosenTile, Board board) {
