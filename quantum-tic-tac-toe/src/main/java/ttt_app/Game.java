@@ -114,8 +114,7 @@ public class Game {
             System.out.println("Draw!!!Nobody wins");
             return;
         }
-        gameBoard.changePlayer();
-        System.out.println("Congratulations to player " + gameBoard.whichPlayerTurn() + " who has won!!!");
+        System.out.println("Congratulations to player " + gameBoard.whoIsWinner() + " who has won!!!");
     }
 
     private static boolean validateChosenMark(String chosenMark, Tile chosenTile, Board board) {

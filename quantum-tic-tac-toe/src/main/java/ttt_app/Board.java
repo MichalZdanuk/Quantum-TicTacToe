@@ -481,6 +481,10 @@ public class Board {
         return ((player == false) ? 0 : 1);
     }
 
+    public Character whoIsWinner(){
+        return processedPlayer;
+    }
+
     public void delay() {
         try {
             TimeUnit.SECONDS.sleep(3);
