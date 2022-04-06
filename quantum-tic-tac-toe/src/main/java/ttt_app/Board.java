@@ -10,7 +10,7 @@ public class Board {
 
     public ArrayList<Tile> tileList;
     private Scanner scanner;
-    private boolean player;
+    public boolean player;
     private int roundNumber = 1;
     private int startingTileNumber;
     public ArrayList<Tile> entangledTilesList = new ArrayList<Tile>(0);
