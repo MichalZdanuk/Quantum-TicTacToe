@@ -481,7 +481,7 @@ public class Board {
         return ((player == false) ? 0 : 1);
     }
 
-    public Character whoIsWinner(){
+    public Character whoIsWinner() {
         return processedPlayer;
     }
 
@@ -491,6 +491,19 @@ public class Board {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public int getRoundNumber() {
+        return roundNumber;
+    }
+
+    public void makeMove(ArrayList<Integer> listFromGUI, String mode) {
+        isMistake = false;
+        Character character = ((player == false) ? 'x' : 'o');
+
+        (tileList.get(listFromGUI.get(0))).putMark(new Mark(character, roundNumber));
+        (tileList.get(listFromGUI.get(1))).putMark(new Mark(character, roundNumber));
+        roundNumber++;
     }
 
 }
