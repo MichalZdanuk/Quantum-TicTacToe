@@ -10,7 +10,13 @@ Rules:
 5. To win a game you have to place three big marks in horizontal/vertical/diagonal line (same as classical tic-tac-toe).
 Good luck!!!
 
-Below example of a game:
+Below example of a game in terminal version:
 
 
 ![Screenshot](ezgif.com-gif-maker.gif)
+
+Below example of a game in GUI version:
+
+
+https://user-images.githubusercontent.com/76063659/163361140-2ea1e0a1-e6d6-4c5b-9b3c-9f4ed76329c3.mp4
+
