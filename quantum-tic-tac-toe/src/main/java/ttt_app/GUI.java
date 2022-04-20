@@ -23,7 +23,7 @@ public class GUI implements ActionListener {
     ArrayList<JButton> buttonListInner;
     String number;
     JLabel infoLabel = new JLabel("Player X Turn", SwingConstants.CENTER);
-    JLabel emptyLabel = new JLabel();// "EMPTY", SwingConstants.CENTER);
+    JLabel emptyLabel = new JLabel();
 
     JPanel panel = new JPanel(new GridLayout(3, 3));
 
@@ -33,10 +33,15 @@ public class GUI implements ActionListener {
 
     GUI(Board givenBoard) {
         frame = new JFrame("Tic-Tac-Toe");
+        infoLabel.setForeground(new Color(255, 255, 255));
+        frame.getContentPane().setBackground(new Color(0, 102, 94));
+        panel.setBackground(new Color(0, 102, 94));
         buttonList = new ArrayList<JButton>();
         for (int i = 0; i < 9; i++) {
-            number = Integer.toString(i);
             buttonList.add(new JButton());
+            buttonList.get(i).setBackground(new Color(0, 59, 54));
+            buttonList.get(i).setForeground(new Color(255, 255, 255));
+
             buttonList.get(i).addActionListener(this);
             frame.add(buttonList.get(i));
             if (i == 2) {
@@ -73,7 +78,9 @@ public class GUI implements ActionListener {
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setText(bigMark);
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setEnabled(false);
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setBackground(Color.DARK_GRAY);
+                                    .setBackground(new Color(1, 38, 34));
+                            buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
+                                    .setForeground(new Color(255, 255, 255));
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
                                     .setFont(new Font("TimesRoman", Font.BOLD, 50));
                         }
@@ -121,7 +128,7 @@ public class GUI implements ActionListener {
 
         frame.setIconImage(icon);
         frame.setLayout(new GridLayout(3, 4));
-        frame.setSize(700, 700);
+        frame.setSize(800, 600);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -181,9 +188,10 @@ public class GUI implements ActionListener {
 
                     // color entangled tiles
                     for (int i = 0; i < gameBoard.entangledTilesList.size(); i++) {
-                        buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setBackground(Color.CYAN);
                         buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
-                                .setForeground(Color.BLACK);
+                                .setBackground(new Color(0, 204, 187));
+                        buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
+                                .setForeground(new Color(0, 0, 0));
                         buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(true);
                     }
 
