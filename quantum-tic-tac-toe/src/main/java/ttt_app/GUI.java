@@ -41,6 +41,7 @@ public class GUI implements ActionListener {
             buttonList.add(new JButton());
             buttonList.get(i).setBackground(new Color(0, 59, 54));
             buttonList.get(i).setForeground(new Color(255, 255, 255));
+            buttonList.get(i).setFocusable(false);
 
             buttonList.get(i).addActionListener(this);
             frame.add(buttonList.get(i));
@@ -60,6 +61,7 @@ public class GUI implements ActionListener {
             number = Integer.toString(i);
             buttonListInner.add(new JButton(number));
             buttonListInner.get(i).setVisible(false);
+            buttonListInner.get(i).setFocusable(false);
             buttonListInner.get(i).addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
