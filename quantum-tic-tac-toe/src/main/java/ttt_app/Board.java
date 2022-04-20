@@ -37,7 +37,13 @@ public class Board {
         scanner = new Scanner(System.in);
     }
 
+    private int minMarkX;
+    private int minMarkO;
+    private int smallest;
+
     public boolean checkIfWinner() {
+        minMarkX = 99;
+        minMarkO = 99;
         for (int i = 0; i < 2; i++) {
             if (i % 2 == 0) {
                 processedPlayer = 'x';
@@ -50,7 +56,21 @@ public class Board {
                     if (tileList.get(0 + j * 3).getBigMark().whichPlayer() == processedPlayer
                             && tileList.get(1 + j * 3).getBigMark().whichPlayer() == processedPlayer
                             && tileList.get(2 + j * 3).getBigMark().whichPlayer() == processedPlayer) {
-                        return true;
+                        if (processedPlayer == 'x') {
+                            smallest = Math.min(tileList.get(0 + j * 3).getBigMark().getMoveNumber(),
+                                    Math.min(tileList.get(1 + j * 3).getBigMark().getMoveNumber(),
+                                            tileList.get(2 + j * 3).getBigMark().getMoveNumber()));
+                            if (minMarkX > smallest) {
+                                minMarkX = smallest;
+                            }
+                        } else if (processedPlayer == 'o') {
+                            smallest = Math.min(tileList.get(0 + j * 3).getBigMark().getMoveNumber(),
+                                    Math.min(tileList.get(1 + j * 3).getBigMark().getMoveNumber(),
+                                            tileList.get(2 + j * 3).getBigMark().getMoveNumber()));
+                            if (minMarkO > smallest) {
+                                minMarkO = smallest;
+                            }
+                        }
                     }
                 }
                 if (tileList.get(0 + j).getBigMark() != null && tileList.get(3 + j).getBigMark() != null
@@ -58,7 +78,22 @@ public class Board {
                     if (tileList.get(0 + j).getBigMark().whichPlayer() == processedPlayer
                             && tileList.get(3 + j).getBigMark().whichPlayer() == processedPlayer
                             && tileList.get(6 + j).getBigMark().whichPlayer() == processedPlayer) {
-                        return true;
+                        if (processedPlayer == 'x') {
+                            smallest = Math.min(tileList.get(0 + j).getBigMark().getMoveNumber(),
+                                    Math.min(tileList.get(3 + j).getBigMark().getMoveNumber(),
+                                            tileList.get(6 + j).getBigMark().getMoveNumber()));
+                            if (minMarkX > smallest) {
+                                minMarkX = smallest;
+                            }
+                        } else if (processedPlayer == 'o') {
+                            smallest = Math.min(tileList.get(0 + j).getBigMark().getMoveNumber(),
+                                    Math.min(tileList.get(3 + j).getBigMark().getMoveNumber(),
+                                            tileList.get(6 + j).getBigMark().getMoveNumber()));
+                            if (minMarkO > smallest) {
+                                minMarkO = smallest;
+                            }
+                        }
+
                     }
                 }
             }
@@ -68,7 +103,21 @@ public class Board {
                 if (tileList.get(0).getBigMark().whichPlayer() == processedPlayer
                         && tileList.get(4).getBigMark().whichPlayer() == processedPlayer
                         && tileList.get(8).getBigMark().whichPlayer() == processedPlayer) {
-                    return true;
+                    if (processedPlayer == 'x') {
+                        smallest = Math.min(tileList.get(0).getBigMark().getMoveNumber(),
+                                Math.min(tileList.get(4).getBigMark().getMoveNumber(),
+                                        tileList.get(8).getBigMark().getMoveNumber()));
+                        if (minMarkX > smallest) {
+                            minMarkX = smallest;
+                        }
+                    } else if (processedPlayer == 'o') {
+                        smallest = Math.min(tileList.get(0).getBigMark().getMoveNumber(),
+                                Math.min(tileList.get(4).getBigMark().getMoveNumber(),
+                                        tileList.get(8).getBigMark().getMoveNumber()));
+                        if (minMarkO > smallest) {
+                            minMarkO = smallest;
+                        }
+                    }
                 }
             }
 
@@ -77,9 +126,26 @@ public class Board {
                 if (tileList.get(2).getBigMark().whichPlayer() == processedPlayer
                         && tileList.get(4).getBigMark().whichPlayer() == processedPlayer
                         && tileList.get(6).getBigMark().whichPlayer() == processedPlayer) {
-                    return true;
+                    if (processedPlayer == 'x') {
+                        smallest = Math.min(tileList.get(2).getBigMark().getMoveNumber(),
+                                Math.min(tileList.get(4).getBigMark().getMoveNumber(),
+                                        tileList.get(6).getBigMark().getMoveNumber()));
+                        if (minMarkX > smallest) {
+                            minMarkX = smallest;
+                        }
+                    } else if (processedPlayer == 'o') {
+                        smallest = Math.min(tileList.get(2).getBigMark().getMoveNumber(),
+                                Math.min(tileList.get(4).getBigMark().getMoveNumber(),
+                                        tileList.get(6).getBigMark().getMoveNumber()));
+                        if (minMarkO > smallest) {
+                            minMarkO = smallest;
+                        }
+                    }
                 }
             }
+        }
+        if (minMarkO < 99 || minMarkX < 99) {
+            return true;
         }
         return false;
     }
@@ -482,7 +548,11 @@ public class Board {
     }
 
     public Character whoIsWinner() {
-        return processedPlayer;
+        if (minMarkO < minMarkX) {
+            return 'o';
+        } else {
+            return 'x';
+        }
     }
 
     public void delay() {
