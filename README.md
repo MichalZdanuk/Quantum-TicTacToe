@@ -18,4 +18,4 @@ Below example of a game in terminal version:
 Below example of a game in GUI version:
 
 
-https://user-images.githubusercontent.com/76063659/163364536-ef0e7e34-3f5f-4fc1-b139-1825274ffe83.mp4
+https://user-images.githubusercontent.com/76063659/164328090-917c4435-8a67-45b6-9113-4e92f6f25307.mp4
