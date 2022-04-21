@@ -20,30 +20,70 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 public class GUI implements ActionListener {
 
-    static Board gameBoard = new Board();
-    JFrame frame;
-    ArrayList<JButton> buttonList;
-    ArrayList<JButton> buttonListInner;
-    String number;
-    JLabel infoLabel = new JLabel("Player X Turn", SwingConstants.CENTER);
-    JLabel emptyLabel = new JLabel();
-    static Clip clip;
-    static Clip clickClip;
-    static Clip entanglementClip;
+    private static Board gameBoard;
+    private JFrame frame;
+    private ArrayList<JButton> buttonList;
+    private ArrayList<JButton> buttonListInner;
+    private String number;
+    private JLabel infoLabel = new JLabel("Player X Turn", SwingConstants.CENTER);
+    private JLabel emptyLabel = new JLabel();
+    private static Clip clip;
+    private static Clip clickClip;
+    private static Clip entanglementClip;
 
-    JPanel panel = new JPanel(new GridLayout(3, 3));
+    private JPanel panel = new JPanel(new GridLayout(3, 3));
 
-    int chosenEntangledTile;
-    String chosenMark = "";
-    String bigMark = "";
+    private int chosenEntangledTile;
+    private String chosenMark = "";
+    private String bigMark = "";
+
+    private JMenuBar menuBar;
+    private JMenu game, mode;
+    private JMenuItem restart, single, multi;
 
     GUI(Board givenBoard) {
+        restart = new JMenuItem("restart");
+        single = new JMenuItem("single");
+        multi = new JMenuItem("multi");
+
+        restart.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+
+        single.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("used single mode");
+            }
+        });
+
+        multi.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("used multi mode");
+            }
+        });
+
+        menuBar = new JMenuBar();
+        game = new JMenu("GAME");
+        mode = new JMenu("MODE");
+        game.add(restart);
+        mode.add(single);
+        mode.add(multi);
+        menuBar.add(game);
+        menuBar.add(mode);
+
         frame = new JFrame("Tic-Tac-Toe");
+        frame.add(menuBar);
+        frame.setJMenuBar(menuBar);
         infoLabel.setForeground(new Color(255, 255, 255));
         frame.getContentPane().setBackground(new Color(0, 102, 94));
         panel.setBackground(new Color(0, 102, 94));
@@ -52,6 +92,7 @@ public class GUI implements ActionListener {
             buttonList.add(new JButton());
             buttonList.get(i).setBackground(new Color(0, 59, 54));
             buttonList.get(i).setForeground(new Color(255, 255, 255));
+            buttonList.get(i).setFont(new Font("", Font.PLAIN, 14));
             buttonList.get(i).setFocusable(false);
 
             buttonList.get(i).addActionListener(this);
@@ -65,12 +106,13 @@ public class GUI implements ActionListener {
             }
         }
 
-        // inner
-
+        // inner buttons
         buttonListInner = new ArrayList<JButton>();
         for (int i = 0; i < 9; i++) {
             number = Integer.toString(i);
             buttonListInner.add(new JButton(number));
+            buttonListInner.get(i).setBackground(new Color(0, 204, 187));
+            buttonListInner.get(i).setForeground(new Color(0, 0, 0));
             buttonListInner.get(i).setVisible(false);
             buttonListInner.get(i).setFocusable(false);
             buttonListInner.get(i).addActionListener(new ActionListener() {
@@ -95,7 +137,7 @@ public class GUI implements ActionListener {
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
                                     .setForeground(new Color(255, 255, 255));
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setFont(new Font("TimesRoman", Font.BOLD, 50));
+                                    .setFont(new Font("", Font.BOLD, 50));
                         }
                     }
 
@@ -123,9 +165,6 @@ public class GUI implements ActionListener {
                     if ((!gameBoard.checkIfWinner()) && (!gameBoard.checkIfDraw())) {
                         return;
                     } else {
-                        clickClip.close();
-                        entanglementClip.close();
-                        clip.close();
                         if (gameBoard.draw) {
                             infoLabel.setText("Draw!!!Nobody wins");
                             for (int i = 0; i < 9; i++) {
@@ -156,12 +195,30 @@ public class GUI implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    Character mark = 'x';
-    int numberOFMove = 0;
-    String text = "";
-    ArrayList<Integer> chosenTiles = new ArrayList<Integer>(0);
-    boolean resolvingEntanglementFlag = false;
-    String additionalString = "";
+    private void restartGame() {
+        gameBoard = new Board();
+        mark = 'x';
+        numberOFMove = 0;
+        clip.loop(6);
+        for (int i = 0; i < 9; i++) {
+            buttonList.get(i).setText("");
+            buttonList.get(i).setEnabled(true);
+            buttonList.get(i).setBackground(new Color(0, 59, 54));
+            buttonList.get(i).setForeground(new Color(255, 255, 255));
+            buttonList.get(i).setFont(new Font("", Font.PLAIN, 14));
+
+            buttonListInner.get(i).setText("");
+            buttonListInner.get(i).setEnabled(true);
+
+        }
+        infoLabel.setText("Player X Turn");
+    }
+
+    private Character mark = 'x';
+    private int numberOFMove = 0;
+    private String text = "";
+    private ArrayList<Integer> chosenTiles = new ArrayList<Integer>(0);
+    private boolean resolvingEntanglementFlag = false;
 
     public void actionPerformed(ActionEvent e) {
         clickClip.start();
@@ -283,9 +340,10 @@ public class GUI implements ActionListener {
         AudioInputStream entanglementStream = AudioSystem.getAudioInputStream(fileEntanglement);
         entanglementClip = AudioSystem.getClip();
         entanglementClip.open(entanglementStream);
-
+        gameBoard = new Board();
         clip.start();
         clip.loop(6);
+
         new GUI(gameBoard);
     }
 
