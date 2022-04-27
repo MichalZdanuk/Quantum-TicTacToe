@@ -1,7 +1,5 @@
 package ttt_app;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -16,12 +14,6 @@ public class Game {
 
     public static void main(String[] args) {
         Board gameBoard = new Board();
-        try {
-            URL myUrl = new URL("https://github.com/MichalZdanuk/Quantum-TicTacToe");
-            System.out.println(myUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
         printGameRules();
         chooseGameMode();
 

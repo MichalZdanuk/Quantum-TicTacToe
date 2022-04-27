@@ -7,6 +7,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,16 +19,18 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-public class GUI implements ActionListener {
+public class GUI extends WindowAdapter implements ActionListener {
 
     private static Board gameBoard;
     private JFrame frame;
@@ -39,20 +43,31 @@ public class GUI implements ActionListener {
     private static Clip clickClip;
     private static Clip entanglementClip;
 
-    private JPanel panel = new JPanel(new GridLayout(3, 3));
+    private JPanel panel = new JPanel(new GridLayout(3, 3, 1, 1));
 
     private int chosenEntangledTile;
     private String chosenMark = "";
     private String bigMark = "";
 
     private JMenuBar menuBar;
-    private JMenu game, mode;
-    private JMenuItem restart, single, multi;
+    private JMenu game, mode, theme, help;
+    private JMenuItem restart, single, multi, blue, red, green, orange, rules;
+
+    private Color foreGround = new Color(255, 255, 255);
+    private Color backGround = new Color(0, 59, 54);
+    private Color backGroundSecond = new Color(0, 102, 94);
+    private Color backGroundEntangled = new Color(0, 204, 187);
+    private Color backGroundColapsed = new Color(0, 71, 0);
 
     GUI(Board givenBoard) {
         restart = new JMenuItem("restart");
         single = new JMenuItem("single");
         multi = new JMenuItem("multi");
+        blue = new JMenuItem("blue");
+        red = new JMenuItem("red");
+        green = new JMenuItem("green");
+        orange = new JMenuItem("orange");
+        rules = new JMenuItem("rules");
 
         restart.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -72,27 +87,88 @@ public class GUI implements ActionListener {
             }
         });
 
+        red.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                foreGround = new Color(255, 255, 255);
+                backGround = new Color(255, 0, 0);
+                backGroundSecond = new Color(179, 0, 0);
+                backGroundEntangled = new Color(255, 191, 191);
+                backGroundColapsed = new Color(255, 128, 128);
+                setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
+            }
+        });
+
+        blue.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                foreGround = new Color(255, 255, 255);
+                backGround = new Color(0, 0, 102);
+                backGroundSecond = new Color(0, 18, 71);
+                backGroundEntangled = new Color(191, 207, 255);
+                backGroundColapsed = new Color(128, 159, 255);
+                setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
+            }
+        });
+
+        green.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                foreGround = new Color(0, 0, 0);
+                backGround = new Color(0, 59, 54);
+                backGroundSecond = new Color(0, 102, 94);
+                backGroundEntangled = new Color(0, 204, 187);
+                backGroundColapsed = new Color(0, 71, 0);
+                setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
+            }
+        });
+
+        orange.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                foreGround = new Color(0, 0, 0);
+                backGround = new Color(255, 148, 0);
+                backGroundSecond = new Color(179, 104, 0);
+                backGroundEntangled = new Color(255, 250, 0);
+                backGroundColapsed = new Color(179, 139, 0);
+                setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
+            }
+        });
+
+        rules.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Welcome to game Quantum Tic-Tac-Toe!\nThis is a bit more advanced version of classical tic-tac-toe game\nRules:\n1. Each round one player put small two marks, which are numbered same as round \ne.g. It's first round (time for player X), so he'll put two x1 marks\n2. You can't place two small marks during round in the same tile.\n3. When after one player's move occures entanglement then second player \nchoose tile and mark to be collapsed here.\n4. Collapsed tiles with chosen mark evolve to big marks.\n5. To win a game you have to place three big marks in horizontal/vertical/diagonal line \n(same as classical tic-tac-toe).\nGood luck!!!");
+            }
+        });
+
         menuBar = new JMenuBar();
         game = new JMenu("GAME");
         mode = new JMenu("MODE");
+        theme = new JMenu("THEME");
+        help = new JMenu("HELP");
         game.add(restart);
         mode.add(single);
         mode.add(multi);
+        theme.add(blue);
+        theme.add(red);
+        theme.add(green);
+        theme.add(orange);
+        help.add(rules);
         menuBar.add(game);
         menuBar.add(mode);
+        menuBar.add(theme);
+        menuBar.add(help);
 
         frame = new JFrame("Tic-Tac-Toe");
         frame.add(menuBar);
         frame.setJMenuBar(menuBar);
-        infoLabel.setForeground(new Color(255, 255, 255));
-        frame.getContentPane().setBackground(new Color(0, 102, 94));
-        panel.setBackground(new Color(0, 102, 94));
+        frame.addWindowListener(this);
+        infoLabel.setForeground(foreGround);
+        frame.getContentPane().setBackground(backGroundSecond);
+        panel.setBackground(backGroundSecond);
         buttonList = new ArrayList<JButton>();
         for (int i = 0; i < 9; i++) {
             buttonList.add(new JButton());
-            buttonList.get(i).setBackground(new Color(0, 59, 54));
-            buttonList.get(i).setForeground(new Color(255, 255, 255));
-            buttonList.get(i).setFont(new Font("", Font.PLAIN, 14));
+            buttonList.get(i).setBackground(backGround);
+            buttonList.get(i).setForeground(foreGround);
+            buttonList.get(i).setFont(new Font("", Font.BOLD, 14));
             buttonList.get(i).setFocusable(false);
 
             buttonList.get(i).addActionListener(this);
@@ -104,6 +180,7 @@ public class GUI implements ActionListener {
             } else if (i == 8) {
                 frame.add(emptyLabel);
             }
+
         }
 
         // inner buttons
@@ -111,8 +188,8 @@ public class GUI implements ActionListener {
         for (int i = 0; i < 9; i++) {
             number = Integer.toString(i);
             buttonListInner.add(new JButton(number));
-            buttonListInner.get(i).setBackground(new Color(0, 204, 187));
-            buttonListInner.get(i).setForeground(new Color(0, 0, 0));
+            buttonListInner.get(i).setBackground(backGroundEntangled);
+            buttonListInner.get(i).setForeground(foreGround);
             buttonListInner.get(i).setVisible(false);
             buttonListInner.get(i).setFocusable(false);
             buttonListInner.get(i).addActionListener(new ActionListener() {
@@ -133,11 +210,11 @@ public class GUI implements ActionListener {
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setText(bigMark);
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setEnabled(false);
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setBackground(new Color(1, 38, 34));
+                                    .setBackground(backGroundColapsed);
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setForeground(new Color(255, 255, 255));
+                                    .setForeground(foreGround);
                             buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setFont(new Font("", Font.BOLD, 50));
+                                    .setFont(new Font("", Font.BOLD, 80));
                         }
                     }
 
@@ -189,10 +266,22 @@ public class GUI implements ActionListener {
                 "C:\\Users\\Michal\\Desktop\\SEM_IV\\Projekt_indywidualny\\Quantum-TicTacToe\\quantum-tic-tac-toe\\graphics\\x.png");
 
         frame.setIconImage(icon);
-        frame.setLayout(new GridLayout(3, 4));
+        frame.setLayout(new GridLayout(3, 4, 5, 5));
         frame.setSize(800, 600);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    }
+
+    ImageIcon closeIcon = new ImageIcon(
+            "C:\\Users\\Michal\\Desktop\\SEM_IV\\Projekt_indywidualny\\Quantum-TicTacToe\\quantum-tic-tac-toe\\graphics\\quit.png");
+
+    public void windowClosing(WindowEvent e) {
+        int a = JOptionPane.showConfirmDialog(frame, "Are you sure to close game?", "Close game",
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, closeIcon);
+
+        if (a == JOptionPane.YES_OPTION) {
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
     }
 
     private void restartGame() {
@@ -203,8 +292,8 @@ public class GUI implements ActionListener {
         for (int i = 0; i < 9; i++) {
             buttonList.get(i).setText("");
             buttonList.get(i).setEnabled(true);
-            buttonList.get(i).setBackground(new Color(0, 59, 54));
-            buttonList.get(i).setForeground(new Color(255, 255, 255));
+            buttonList.get(i).setBackground(backGround);
+            buttonList.get(i).setForeground(foreGround);
             buttonList.get(i).setFont(new Font("", Font.PLAIN, 14));
 
             buttonListInner.get(i).setText("");
@@ -212,6 +301,30 @@ public class GUI implements ActionListener {
 
         }
         infoLabel.setText("Player X Turn");
+    }
+
+    private void setThemeColor(Color foreGround, Color backGround, Color backGroundSecond, Color backGroundEntangled,
+            Color backGroundColapsed) {
+        for (int i = 0; i < 9; i++) {
+            if (gameBoard.tileList.get(i).checkIfTileColapsed()) {
+                buttonList.get(i)
+                        .setBackground(backGroundColapsed);
+            } else if (gameBoard.tileList.get(i).checkIfTileEntangled()) {
+                buttonList.get(i)
+                        .setBackground(backGroundEntangled);
+            } else {
+                buttonList.get(i)
+                        .setBackground(backGround);
+            }
+            buttonList.get(i).setForeground(foreGround);
+
+            buttonListInner.get(i)
+                    .setBackground(backGroundEntangled);
+            buttonListInner.get(i).setForeground(foreGround);
+
+            panel.setBackground(backGroundSecond);
+            frame.getContentPane().setBackground(backGroundSecond);
+        }
     }
 
     private Character mark = 'x';
@@ -271,9 +384,9 @@ public class GUI implements ActionListener {
                 // color entangled tiles
                 for (int i = 0; i < gameBoard.entangledTilesList.size(); i++) {
                     buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
-                            .setBackground(new Color(0, 204, 187));
+                            .setBackground(backGroundEntangled);
                     buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
-                            .setForeground(new Color(0, 0, 0));
+                            .setForeground(foreGround);
                     buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(true);
                 }
 
