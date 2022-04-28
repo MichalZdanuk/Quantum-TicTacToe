@@ -101,10 +101,10 @@ public class GUI extends WindowAdapter implements ActionListener {
         blue.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 foreGround = new Color(255, 255, 255);
-                backGround = new Color(0, 0, 102);
-                backGroundSecond = new Color(0, 18, 71);
-                backGroundEntangled = new Color(191, 207, 255);
-                backGroundColapsed = new Color(128, 159, 255);
+                backGround = new Color(20, 93, 160);
+                backGroundSecond = new Color(12, 45, 72);
+                backGroundEntangled = new Color(46, 139, 192);
+                backGroundColapsed = new Color(177, 212, 224);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
@@ -134,7 +134,9 @@ public class GUI extends WindowAdapter implements ActionListener {
         rules.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(frame,
-                        "Welcome to game Quantum Tic-Tac-Toe!\nThis is a bit more advanced version of classical tic-tac-toe game\nRules:\n1. Each round one player put small two marks, which are numbered same as round \ne.g. It's first round (time for player X), so he'll put two x1 marks\n2. You can't place two small marks during round in the same tile.\n3. When after one player's move occures entanglement then second player \nchoose tile and mark to be collapsed here.\n4. Collapsed tiles with chosen mark evolve to big marks.\n5. To win a game you have to place three big marks in horizontal/vertical/diagonal line \n(same as classical tic-tac-toe).\nGood luck!!!");
+                        "Welcome to game Quantum Tic-Tac-Toe!\nThis is a bit more advanced version of classical tic-tac-toe game\nRules:\n1. Each round one player put small two marks, which are numbered same as round \ne.g. It's first round (time for player X), so he'll put two x1 marks\n2. You can't place two small marks during round in the same tile.\n3. When after one player's move occures entanglement then second player \nchoose tile and mark to be collapsed here.\n4. Collapsed tiles with chosen mark evolve to big marks.\n5. To win a game you have to place three big marks in horizontal/vertical/diagonal line \n(same as classical tic-tac-toe).\nGood luck!!!",
+                        "Game Rules", JOptionPane.INFORMATION_MESSAGE);
+                ;
             }
         });
 
@@ -244,6 +246,10 @@ public class GUI extends WindowAdapter implements ActionListener {
                     } else {
                         if (gameBoard.draw) {
                             infoLabel.setText("Draw!!!Nobody wins");
+                            JOptionPane.showMessageDialog(frame,
+                                    "Draw!!!Nobody wins",
+                                    "DRAW",
+                                    JOptionPane.INFORMATION_MESSAGE);
                             for (int i = 0; i < 9; i++) {
                                 buttonList.get(i).setEnabled(false);
                             }
@@ -252,6 +258,11 @@ public class GUI extends WindowAdapter implements ActionListener {
 
                         infoLabel.setText("<html>Congratulations to player " + gameBoard.whoIsWinner()
                                 + " who has won!!!</html>");
+                        JOptionPane.showMessageDialog(frame,
+                                "Congratulations to player " + gameBoard.whoIsWinner()
+                                        + " who has won!!!",
+                                "WINNER",
+                                JOptionPane.INFORMATION_MESSAGE);
                         for (int i = 0; i < 9; i++) {
                             buttonList.get(i).setEnabled(false);
                         }
@@ -342,11 +353,11 @@ public class GUI extends WindowAdapter implements ActionListener {
 
             for (int i = 0; i < buttonList.size(); i++) {
                 if (e.getSource() == buttonList.get(i)) {
-
                     buttonList.get(i).setText(buttonList.get(i).getText() + " " + text);
                     buttonList.get(i).setEnabled(false);
                     chosenTiles.add(i);
                     numberOFMove++;
+
                     break;
                 }
             }
@@ -454,8 +465,8 @@ public class GUI extends WindowAdapter implements ActionListener {
         entanglementClip = AudioSystem.getClip();
         entanglementClip.open(entanglementStream);
         gameBoard = new Board();
-        clip.start();
-        clip.loop(6);
+        // clip.start();
+        // clip.loop(6);
 
         new GUI(gameBoard);
     }
