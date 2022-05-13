@@ -391,7 +391,7 @@ public class GUI extends WindowAdapter implements ActionListener {
 
     private static void refreshBoard(int botEntngledTile) {
         infoLabel.setText("<html> ENTANGLEMENT: BOT CHOSEN " + botEntngledTile + " TILE </html>");
-        bot.delay();
+        bot.delay(1);
     }
 
     static ArrayList<Integer> botTiles;
@@ -439,7 +439,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     botEntngledTile = bot.botEntangleMove(gameBoard);
                     refreshBoard(botEntngledTile);
                     buttonList.get(botEntngledTile).setBackground(new Color(70, 122, 38));
-                    bot.delay();
+                    bot.delay(2);
                     colorColapsedTiles();
                     resolvingEntanglementFlag = false;
                     infoLabel.setText("Player O Turn");

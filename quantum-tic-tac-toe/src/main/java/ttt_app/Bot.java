@@ -5,57 +5,57 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Bot {
-    Random rnd;
-    private int botFirstTile;
-    private int botSecondTile;
-    String chosenMark = "";
+    private Random rnd;
+    private int botFirstTileNumber;
+    private int botSecondTileNumber;
+    private String chosenMark = "";
+    private ArrayList<Integer> botTiles = new ArrayList<>();
+    private ArrayList<Integer> botEntangledTiles = new ArrayList<>();
+    private int chosenTileIndex;
+    private int chosenMarkIndex;
 
     Bot() {
         rnd = new Random();
     }
 
-    private ArrayList<Integer> botTiles = new ArrayList<>();
-    private ArrayList<Integer> botEntangledTiles = new ArrayList<>();
-
     public ArrayList<Integer> botMove(Board board) {
-        delay();
+
+        delay(2);
         botTiles.clear();
-        botFirstTile = rnd.nextInt(9);
-        botSecondTile = rnd.nextInt(9);
-        while (!board.validateGivenTiles(botFirstTile, botSecondTile, "single")
-                && !board.checkIfChosenTileIsFull(botFirstTile, "single")
-                && !board.checkIfChosenTileIsFull(botSecondTile, "single")) {
-            botFirstTile = rnd.nextInt(9);
-            botSecondTile = rnd.nextInt(9);
+        botFirstTileNumber = rnd.nextInt(9);
+        botSecondTileNumber = rnd.nextInt(9);
+        while (!board.validateGivenTiles(botFirstTileNumber, botSecondTileNumber, "single")
+                && !board.checkIfChosenTileIsFull(botFirstTileNumber, "single")
+                && !board.checkIfChosenTileIsFull(botSecondTileNumber, "single")) {
+            botFirstTileNumber = rnd.nextInt(9);
+            botSecondTileNumber = rnd.nextInt(9);
         }
-        botTiles.add(botFirstTile);
-        botTiles.add(botSecondTile);
-        (board.tileList.get(botFirstTile)).putMark(new Mark('o', board.getRoundNumber()));
-        (board.tileList.get(botSecondTile)).putMark(new Mark('o', board.getRoundNumber()));
+        botTiles.add(botFirstTileNumber);
+        botTiles.add(botSecondTileNumber);
+        (board.tileList.get(botFirstTileNumber)).putMark(new Mark('o', board.getRoundNumber()));
+        (board.tileList.get(botSecondTileNumber)).putMark(new Mark('o', board.getRoundNumber()));
         board.roundNumber++;
 
-        System.out.println("Bot First tile: " + botFirstTile);
-        System.out.println("Bot Second tile: " + botSecondTile);
+        System.out.println("Bot First tile: " + botFirstTileNumber);
+        System.out.println("Bot Second tile: " + botSecondTileNumber);
         return botTiles;
     }
 
-    private static int index;
-
     public int botEntangleMove(Board board) {
-        delay();
+        delay(3);
         botEntangledTiles.clear();
-        index = rnd.nextInt(board.entangledTilesList.size());
-        while (!validateChosenTile(board.entangledTilesList.get(index).getNumberOfTile(), board)) {
-            index = rnd.nextInt(board.entangledTilesList.size());
+        chosenTileIndex = rnd.nextInt(board.entangledTilesList.size());
+        while (!validateChosenTile(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile(), board)) {
+            chosenTileIndex = rnd.nextInt(board.entangledTilesList.size());
         }
 
-        chooseEntangledMark(board.entangledTilesList.get(index).getNumberOfTile(), board);
+        chooseEntangledMark(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile(), board);
         board.resolveEntanglement(chosenMark,
-                board.tileList.get(board.entangledTilesList.get(index).getNumberOfTile()));
-        return board.entangledTilesList.get(index).getNumberOfTile();
+                board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()));
+        return board.entangledTilesList.get(chosenTileIndex).getNumberOfTile();
     }
 
-    private static boolean validateChosenTile(int givenIndex, Board board) {
+    private boolean validateChosenTile(int givenIndex, Board board) {
 
         ArrayList<Integer> listOfNumbersToCheck = board.entangledTilesNumbers();
         for (int i = 0; i < board.getSize(); i++) {
@@ -66,30 +66,29 @@ public class Bot {
         return false;
     }
 
-    public static int chosenBotMark;
-
     private void chooseEntangledMark(int tile, Board board) {
         System.out.println("bot choosing mark");
-        chosenBotMark = rnd.nextInt(board.tileList.get(tile).marklist.size());
-        while (!isMarkEntangled(chosenBotMark, board)) {
-            chosenBotMark = rnd.nextInt(board.tileList.get(tile).marklist.size());
+        chosenMarkIndex = rnd.nextInt(board.tileList.get(tile).marklist.size());
+        while (!isMarkEntangled(chosenMarkIndex, board)) {
+            chosenMarkIndex = rnd.nextInt(board.tileList.get(tile).marklist.size());
         }
         System.out.println(
-                "Bot has chosen: " + board.tileList.get(board.entangledTilesList.get(index).getNumberOfTile()).marklist
-                        .get(chosenBotMark).markSyntax());
-        chosenMark = board.tileList.get(board.entangledTilesList.get(index).getNumberOfTile()).marklist
-                .get(chosenBotMark).markSyntax();
+                "Bot has chosen: "
+                        + board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()).marklist
+                                .get(chosenMarkIndex).markSyntax());
+        chosenMark = board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()).marklist
+                .get(chosenMarkIndex).markSyntax();
     }
 
-    private static boolean isMarkEntangled(int markToBeChecked, Board board) {
+    private boolean isMarkEntangled(int markToBeChecked, Board board) {
         System.out.println("checking chosen mark");
         System.out
                 .println("chosen mark to be checked: "
-                        + board.tileList.get(board.entangledTilesList.get(index).getNumberOfTile()).marklist
+                        + board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()).marklist
                                 .get(markToBeChecked).markSyntax());
         for (Mark mark : board.marksInEntanglementList) {
             if (mark.markSyntax()
-                    .equals(board.tileList.get(board.entangledTilesList.get(index).getNumberOfTile()).marklist
+                    .equals(board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()).marklist
                             .get(markToBeChecked).markSyntax())) {
                 return true;
             }
@@ -97,9 +96,9 @@ public class Bot {
         return false;
     }
 
-    public void delay() {
+    public void delay(int delayTime) {
         try {
-            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.SECONDS.sleep(delayTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
