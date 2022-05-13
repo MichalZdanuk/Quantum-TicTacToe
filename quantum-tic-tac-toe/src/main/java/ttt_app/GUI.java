@@ -33,11 +33,11 @@ import javax.swing.SwingConstants;
 public class GUI extends WindowAdapter implements ActionListener {
 
     private static Board gameBoard;
-    private JFrame frame;
-    private ArrayList<JButton> buttonList;
-    private ArrayList<JButton> buttonListInner;
+    private static JFrame frame;
+    private static ArrayList<JButton> buttonList;
+    private static ArrayList<JButton> buttonListInner;
     private String number;
-    private JLabel infoLabel = new JLabel("Player X Turn", SwingConstants.CENTER);
+    private static JLabel infoLabel = new JLabel("Player X Turn", SwingConstants.CENTER);
     private JLabel emptyLabel = new JLabel();
     private static Clip clip;
     private static Clip clickClip;
@@ -47,17 +47,20 @@ public class GUI extends WindowAdapter implements ActionListener {
 
     private int chosenEntangledTile;
     private String chosenMark = "";
-    private String bigMark = "";
+    private static String bigMark = "";
 
     private JMenuBar menuBar;
     private JMenu game, mode, theme, help;
     private JMenuItem restart, single, multi, blue, red, green, orange, rules;
 
-    private Color foreGround = new Color(255, 255, 255);
-    private Color backGround = new Color(0, 59, 54);
+    private static Color foreGround = new Color(255, 255, 255);
+    private static Color backGround = new Color(0, 59, 54);
     private Color backGroundSecond = new Color(0, 102, 94);
-    private Color backGroundEntangled = new Color(0, 204, 187);
-    private Color backGroundColapsed = new Color(0, 71, 0);
+    private static Color backGroundEntangled = new Color(0, 204, 187);
+    private static Color backGroundColapsed = new Color(0, 71, 0);
+
+    private static Bot bot;
+    private static String gameMode = "multi";
 
     GUI(Board givenBoard) {
         restart = new JMenuItem("restart");
@@ -77,13 +80,16 @@ public class GUI extends WindowAdapter implements ActionListener {
 
         single.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("used single mode");
+                bot = new Bot();
+                gameMode = "single";
+                restartGame();
             }
         });
 
         multi.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("used multi mode");
+                gameMode = "multi";
+                restartGame();
             }
         });
 
@@ -205,20 +211,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     }
                     gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(chosenEntangledTile));
 
-                    // highlight colapsed tiles
-                    for (int i = 0; i < gameBoard.tileList.size(); i++) {
-                        if (gameBoard.tileList.get(i).checkIfTileColapsed()) {
-                            bigMark = gameBoard.tileList.get(i).getBigMark().markSyntax();
-                            buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setText(bigMark);
-                            buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setEnabled(false);
-                            buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setBackground(backGroundColapsed);
-                            buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setForeground(foreGround);
-                            buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
-                                    .setFont(new Font("", Font.BOLD, 80));
-                        }
-                    }
+                    colorColapsedTiles();
 
                     // unlock other tiles
                     for (int i = 0; i < 9; i++) {
@@ -226,10 +219,8 @@ public class GUI extends WindowAdapter implements ActionListener {
                             buttonList.get(i).setEnabled(true);
                         }
                     }
-                    // block again mark buttons
-                    for (int i = 0; i < 9; i++) {
-                        buttonListInner.get(i).setVisible(false);
-                    }
+
+                    hideInnerButtons();
 
                     infoLabel.setText("Player " + gameBoard.whichPlayerTurn() + " turn");
                     resolvingEntanglementFlag = false;
@@ -240,32 +231,6 @@ public class GUI extends WindowAdapter implements ActionListener {
                         TimeUnit.MILLISECONDS.sleep(600);
                     } catch (InterruptedException ex) {
                         ex.printStackTrace();
-                    }
-                    if ((!gameBoard.checkIfWinner()) && (!gameBoard.checkIfDraw())) {
-                        return;
-                    } else {
-                        if (gameBoard.draw) {
-                            infoLabel.setText("Draw!!!Nobody wins");
-                            JOptionPane.showMessageDialog(frame,
-                                    "Draw!!!Nobody wins",
-                                    "DRAW",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            for (int i = 0; i < 9; i++) {
-                                buttonList.get(i).setEnabled(false);
-                            }
-                            return;
-                        }
-
-                        infoLabel.setText("<html>Congratulations to player " + gameBoard.whoIsWinner()
-                                + " who has won!!!</html>");
-                        JOptionPane.showMessageDialog(frame,
-                                "Congratulations to player " + gameBoard.whoIsWinner()
-                                        + " who has won!!!",
-                                "WINNER",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        for (int i = 0; i < 9; i++) {
-                            buttonList.get(i).setEnabled(false);
-                        }
                     }
                 }
 
@@ -295,10 +260,10 @@ public class GUI extends WindowAdapter implements ActionListener {
         }
     }
 
-    private void restartGame() {
+    private static void restartGame() {
         gameBoard = new Board();
         mark = 'x';
-        numberOFMove = 0;
+        numberOfMove = 0;
         clip.loop(6);
         for (int i = 0; i < 9; i++) {
             buttonList.get(i).setText("");
@@ -312,6 +277,7 @@ public class GUI extends WindowAdapter implements ActionListener {
 
         }
         infoLabel.setText("Player X Turn");
+        hideInnerButtons();
     }
 
     private void setThemeColor(Color foreGround, Color backGround, Color backGroundSecond, Color backGroundEntangled,
@@ -338,16 +304,15 @@ public class GUI extends WindowAdapter implements ActionListener {
         }
     }
 
-    private Character mark = 'x';
-    private int numberOFMove = 0;
-    private String text = "";
+    private static Character mark = 'x';
+    private static int numberOfMove = 0;
+    private static String text = "";
     private ArrayList<Integer> chosenTiles = new ArrayList<Integer>(0);
-    private boolean resolvingEntanglementFlag = false;
+    private static boolean resolvingEntanglementFlag = false;
 
     public void actionPerformed(ActionEvent e) {
         clickClip.start();
         clickClip.setMicrosecondPosition(0);
-
         if (!resolvingEntanglementFlag) {
             text = mark + Integer.toString(gameBoard.getRoundNumber());
 
@@ -356,21 +321,19 @@ public class GUI extends WindowAdapter implements ActionListener {
                     buttonList.get(i).setText(buttonList.get(i).getText() + " " + text);
                     buttonList.get(i).setEnabled(false);
                     chosenTiles.add(i);
-                    numberOFMove++;
-
+                    numberOfMove++;
                     break;
                 }
             }
 
-            // if player made 2 moves change turn
-            if (numberOFMove == 2) {
+            if (numberOfMove == 2) {
                 gameBoard.makeMove(chosenTiles, "multi");
                 for (int i = 0; i < chosenTiles.size(); i++) {
                     buttonList.get(chosenTiles.get(i)).setEnabled(true);
                 }
                 changeMark();
                 gameBoard.changePlayer();
-                numberOFMove = 0;
+                numberOfMove = 0;
 
                 if (gameBoard.player == false) {
                     infoLabel.setText("Player X Turn");
@@ -380,27 +343,16 @@ public class GUI extends WindowAdapter implements ActionListener {
                     mark = 'o';
                 }
                 chosenTiles.clear();
+
+                if (gameMode == "single") {
+                    lockAllTiles();
+                }
             }
 
-            // checking if entanglement occured
             if (gameBoard.checkIfIsEntanglement()) {
-
                 infoLabel.setText("<html>Entanglement occured: player " + mark + " move</html>");
-
-                // block all tiles
-                for (int i = 0; i < buttonList.size(); i++) {
-                    buttonList.get(i).setEnabled(false);
-                }
-
-                // color entangled tiles
-                for (int i = 0; i < gameBoard.entangledTilesList.size(); i++) {
-                    buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
-                            .setBackground(backGroundEntangled);
-                    buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
-                            .setForeground(foreGround);
-                    buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(true);
-                }
-
+                lockAllTiles();
+                colorEntangledTiles();
                 resolvingEntanglementFlag = true;
             }
 
@@ -411,9 +363,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     break;
                 }
             }
-            for (int i = 0; i < 9; i++) {
-                buttonListInner.get(i).setVisible(false);
-            }
+            hideInnerButtons();
 
             for (int i = 0; i < gameBoard.marksInEntanglementList.size(); i++) {
                 for (int j = 0; j < gameBoard.tileList.get(chosenEntangledTile).marklist.size(); j++) {
@@ -439,6 +389,14 @@ public class GUI extends WindowAdapter implements ActionListener {
 
     }
 
+    private static void refreshBoard(int botEntngledTile) {
+        infoLabel.setText("<html> ENTANGLEMENT: BOT CHOSEN " + botEntngledTile + " TILE </html>");
+        bot.delay();
+    }
+
+    static ArrayList<Integer> botTiles;
+    static int botEntngledTile;
+
     private void changeMark() {
         if (mark == 'x') {
             mark = 'o';
@@ -453,22 +411,148 @@ public class GUI extends WindowAdapter implements ActionListener {
         clip = AudioSystem.getClip();
         clip.open(audioStream);
 
-        // click sound
         File fileClick = new File("clickSound.wav");
         AudioInputStream clickStream = AudioSystem.getAudioInputStream(fileClick);
         clickClip = AudioSystem.getClip();
         clickClip.open(clickStream);
 
-        // entanglement sound
         File fileEntanglement = new File("entanglementSound.wav");
         AudioInputStream entanglementStream = AudioSystem.getAudioInputStream(fileEntanglement);
         entanglementClip = AudioSystem.getClip();
         entanglementClip.open(entanglementStream);
         gameBoard = new Board();
-        // clip.start();
-        // clip.loop(6);
-
+        clip.start();
+        clip.loop(6);
         new GUI(gameBoard);
+        while (true) {
+            playGame();
+        }
+
+    }
+
+    private static void playGame() {
+        while (!gameBoard.checkIfWinner() && !gameBoard.checkIfDraw()) {
+            if (gameMode == "single" && mark == 'o') {
+                lockAllTiles();
+                System.out.println("inside bot");
+                if (gameBoard.isEntanglement) {
+                    botEntngledTile = bot.botEntangleMove(gameBoard);
+                    refreshBoard(botEntngledTile);
+                    buttonList.get(botEntngledTile).setBackground(new Color(70, 122, 38));
+                    bot.delay();
+                    colorColapsedTiles();
+                    resolvingEntanglementFlag = false;
+                    infoLabel.setText("Player O Turn");
+                } else if (!gameBoard.isEntanglement) {
+                    botTiles = bot.botMove(gameBoard);
+                    gameBoard.changePlayer();
+                    for (int i = 0; i < 9; i++) {
+                        for (int j = 0; j < botTiles.size(); j++) {
+                            if (i == botTiles.get(j)) {
+                                buttonList.get(i)
+                                        .setText(
+                                                buttonList.get(i).getText() + " " + "o"
+                                                        + (gameBoard.getRoundNumber() - 1));
+                            }
+                        }
+                    }
+                    infoLabel.setText("Player X Turn");
+                    mark = 'x';
+                }
+
+                unlockAllTiles();
+                gameBoard.checkIfIsEntanglement();
+            } else if (gameMode == "single" && mark == 'x') {
+                if (gameBoard.isEntanglement) {
+                    lockAllTiles();
+                    colorEntangledTiles();
+                    gameBoard.isEntanglement = false;
+                    resolvingEntanglementFlag = true;
+                }
+            }
+        }
+
+        if (gameBoard.checkIfWinner()) {
+            informAboutWin();
+        } else if (gameBoard.checkIfDraw()) {
+            informAboutDraw();
+        }
+        restartGame();
+
+    }
+
+    private static void colorEntangledTiles() {
+        for (int i = 0; i < gameBoard.entangledTilesList.size(); i++) {
+            buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
+                    .setBackground(backGroundEntangled);
+            buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile())
+                    .setForeground(foreGround);
+            buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(true);
+            if (gameMode == "single" && mark == 'o') {
+                buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(false);
+            }
+            gameBoard.isEntanglement = true;
+        }
+    }
+
+    private static void colorColapsedTiles() {
+        for (int i = 0; i < gameBoard.tileList.size(); i++) {
+            if (gameBoard.tileList.get(i).checkIfTileColapsed()) {
+                bigMark = gameBoard.tileList.get(i).getBigMark().markSyntax();
+                buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setText(bigMark);
+                buttonList.get(gameBoard.tileList.get(i).getNumberOfTile()).setEnabled(false);
+                buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
+                        .setBackground(backGroundColapsed);
+                buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
+                        .setForeground(foreGround);
+                buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
+                        .setFont(new Font("", Font.BOLD, 80));
+            }
+        }
+    }
+
+    private static void lockAllTiles() {
+        for (int i = 0; i < buttonList.size(); i++) {
+            buttonList.get(i).setEnabled(false);
+        }
+    }
+
+    private static void unlockAllTiles() {
+        for (int i = 0; i < buttonList.size(); i++) {
+            if (!gameBoard.tileList.get(i).checkIfTileColapsed()) {
+                buttonList.get(i).setEnabled(true);
+            }
+        }
+    }
+
+    private static void hideInnerButtons() {
+        for (int i = 0; i < buttonListInner.size(); i++) {
+            buttonListInner.get(i).setVisible(false);
+        }
+    }
+
+    private static void informAboutDraw() {
+        infoLabel.setText("Draw!!!Nobody wins");
+        JOptionPane.showMessageDialog(frame,
+                "Draw!!!Nobody wins",
+                "DRAW",
+                JOptionPane.INFORMATION_MESSAGE);
+        for (int i = 0; i < 9; i++) {
+            buttonList.get(i).setEnabled(false);
+        }
+    }
+
+    private static void informAboutWin() {
+        infoLabel.setText("<html>Congratulations to player " + gameBoard.whoIsWinner()
+                + " who has won!!!</html>");
+        JOptionPane.showMessageDialog(frame,
+                "Congratulations to player " + gameBoard.whoIsWinner()
+                        + " who has won!!!",
+                "WINNER",
+                JOptionPane.INFORMATION_MESSAGE);
+        for (int i = 0; i < 9; i++) {
+            buttonList.get(i).setEnabled(false);
+        }
     }
 
 }

@@ -11,12 +11,12 @@ public class Board {
     public ArrayList<Tile> tileList;
     private Scanner scanner;
     public boolean player;
-    private int roundNumber = 1;
+    public int roundNumber = 1;
     private int startingTileNumber;
     public ArrayList<Tile> entangledTilesList = new ArrayList<Tile>(0);
     public ArrayList<Mark> marksInEntanglementList = new ArrayList<Mark>(0);
     private ArrayList<Tile> availableTiles = new ArrayList<Tile>(0);
-    private boolean isEntanglement = false;
+    public boolean isEntanglement = false; // temporary changed to public
     private Tile nextTile;
     private ArrayList<Integer> numbersList;
     private Character processedPlayer;
@@ -257,7 +257,7 @@ public class Board {
         }
     }
 
-    private boolean validateGivenTiles(int chosenFirstTile, int chosenSecondTile, String mode) {
+    public boolean validateGivenTiles(int chosenFirstTile, int chosenSecondTile, String mode) {
         if ((chosenFirstTile > 8) || (chosenSecondTile > 8) || (chosenFirstTile < 0) || chosenSecondTile < 0) {
             if (mode.equals("multi")) {
                 System.out.println("You've chosen wrong tile number! Number has to be between 0 and 8");
@@ -290,7 +290,7 @@ public class Board {
         }
     }
 
-    private boolean checkIfChosenTileIsFull(int tileNumber, String mode) {
+    public boolean checkIfChosenTileIsFull(int tileNumber, String mode) {
         if ((tileList.get(tileNumber)).marklist.size() == 9) {
             if (mode.equals("multi")) {
                 System.out.println("Tile " + tileNumber + " is full. Please choose different tile!");
@@ -334,7 +334,6 @@ public class Board {
                     for (int i = 0; i < entangledTilesList.size(); i++) {
                         tileList.get(entangledTilesList.get(i).getNumberOfTile()).setEntanglement();
                     }
-                    correctMarksInEntanglementList();// maybe not useful now
                     additionalFlag = 0;
                     return true;
                 } else {
@@ -343,26 +342,6 @@ public class Board {
             }
         }
         return isEntanglement;
-    }
-
-    private void correctMarksInEntanglementList() {
-        int counter = 0;
-        for (Mark mark : marksInEntanglementList) {
-            for (Tile tile : entangledTilesList) {
-                for (Mark markInTile : tile.marklist) {
-                    if (markInTile.isEqual(mark)) {
-                        counter++;
-                    }
-                }
-            }
-            if (counter == 2) {
-                counter = 0;
-                continue;
-            } else {
-                marksInEntanglementList.remove(mark);
-            }
-            counter = 0;
-        }
     }
 
     private void searchForEntanglement(Tile tile) {
