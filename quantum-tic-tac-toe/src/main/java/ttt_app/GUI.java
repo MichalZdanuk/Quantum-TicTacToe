@@ -37,7 +37,7 @@ public class GUI extends WindowAdapter implements ActionListener {
     private static ArrayList<JButton> buttonList;
     private static ArrayList<JButton> buttonListInner;
     private String number;
-    private static JLabel infoLabel = new JLabel("Player X Turn", SwingConstants.CENTER);
+    private static JLabel infoLabel = new JLabel("Player X Move", SwingConstants.CENTER);
     private JLabel emptyLabel = new JLabel();
     private static Clip clip;
     private static Clip clickClip;
@@ -54,11 +54,10 @@ public class GUI extends WindowAdapter implements ActionListener {
     private JMenuItem restart, single, multi, blue, red, green, orange, rules;
 
     private static Color foreGround = new Color(255, 255, 255);
-    private static Color backGround = new Color(0, 59, 54);
-    private Color backGroundSecond = new Color(0, 102, 94);
-    private static Color backGroundEntangled = new Color(0, 204, 187);
-    private static Color backGroundColapsed = new Color(0, 71, 0);
-
+    private static Color backGround = new Color(49, 123, 34);
+    private Color backGroundSecond = new Color(42, 77, 20);
+    private static Color backGroundEntangled = new Color(103, 224, 163);
+    private static Color backGroundColapsed = new Color(175, 249, 201);
     private static Bot bot;
     private static String gameMode = "multi";
 
@@ -96,10 +95,10 @@ public class GUI extends WindowAdapter implements ActionListener {
         red.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 foreGround = new Color(255, 255, 255);
-                backGround = new Color(255, 0, 0);
-                backGroundSecond = new Color(179, 0, 0);
-                backGroundEntangled = new Color(255, 191, 191);
-                backGroundColapsed = new Color(255, 128, 128);
+                backGround = new Color(137, 15, 13);
+                backGroundSecond = new Color(63, 6, 6);
+                backGroundEntangled = new Color(232, 58, 20);
+                backGroundColapsed = new Color(217, 206, 63);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
@@ -109,7 +108,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                 foreGround = new Color(255, 255, 255);
                 backGround = new Color(20, 93, 160);
                 backGroundSecond = new Color(12, 45, 72);
-                backGroundEntangled = new Color(46, 139, 192);
+                backGroundEntangled = new Color(116, 189, 203);
                 backGroundColapsed = new Color(177, 212, 224);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
@@ -117,18 +116,18 @@ public class GUI extends WindowAdapter implements ActionListener {
 
         green.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                foreGround = new Color(0, 0, 0);
-                backGround = new Color(0, 59, 54);
-                backGroundSecond = new Color(0, 102, 94);
-                backGroundEntangled = new Color(0, 204, 187);
-                backGroundColapsed = new Color(0, 71, 0);
+                foreGround = new Color(255, 255, 255);
+                backGround = new Color(49, 123, 34);
+                backGroundSecond = new Color(42, 77, 20);
+                backGroundEntangled = new Color(103, 224, 163);
+                backGroundColapsed = new Color(175, 249, 201);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
 
         orange.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                foreGround = new Color(0, 0, 0);
+                foreGround = new Color(255, 255, 255);
                 backGround = new Color(255, 148, 0);
                 backGroundSecond = new Color(179, 104, 0);
                 backGroundEntangled = new Color(255, 250, 0);
@@ -222,7 +221,7 @@ public class GUI extends WindowAdapter implements ActionListener {
 
                     hideInnerButtons();
 
-                    infoLabel.setText("Player " + gameBoard.whichPlayerTurn() + " turn");
+                    infoLabel.setText("Player " + gameBoard.whichPlayerTurn() + " Move");
                     resolvingEntanglementFlag = false;
 
                     entanglementClip.start();
@@ -242,7 +241,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                 "C:\\Users\\Michal\\Desktop\\SEM_IV\\Projekt_indywidualny\\Quantum-TicTacToe\\quantum-tic-tac-toe\\graphics\\x.png");
 
         frame.setIconImage(icon);
-        frame.setLayout(new GridLayout(3, 4, 5, 5));
+        frame.setLayout(new GridLayout(3, 4, 7, 7));
         frame.setSize(800, 600);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -276,7 +275,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             buttonListInner.get(i).setEnabled(true);
 
         }
-        infoLabel.setText("Player x Turn");
+        infoLabel.setText("Player x Move");
         hideInnerButtons();
     }
 
@@ -336,10 +335,10 @@ public class GUI extends WindowAdapter implements ActionListener {
                 numberOfMove = 0;
 
                 if (gameBoard.player == false) {
-                    infoLabel.setText("Player x Turn");
+                    infoLabel.setText("Player x Move");
                     mark = 'x';
                 } else if (gameBoard.player == true) {
-                    infoLabel.setText("Player o Turn");
+                    infoLabel.setText("Player o Move");
                     mark = 'o';
                 }
                 chosenTiles.clear();
@@ -445,7 +444,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     bot.delay(2000);
                     colorColapsedTiles();
                     resolvingEntanglementFlag = false;
-                    infoLabel.setText("Player o Turn");
+                    infoLabel.setText("Player o Move");
                 } else if (!resolvingEntanglementFlag) {
                     botTiles = bot.botMove(gameBoard);
                     gameBoard.changePlayer();
@@ -459,7 +458,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                             }
                         }
                     }
-                    infoLabel.setText("Player x Turn");
+                    infoLabel.setText("Player x Move");
                     mark = 'x';
                     gameBoard.checkIfIsEntanglement();
                 }
@@ -494,7 +493,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             if (gameMode == "single" && mark == 'o') {
                 buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(false);
             }
-            infoLabel.setText("<html>entanglement occured: " + mark + " move</html>");
+            infoLabel.setText("<html>Entanglement occured: " + mark + " move</html>");
             gameBoard.isEntanglement = true;
         }
     }
