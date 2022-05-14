@@ -20,7 +20,7 @@ public class Bot {
 
     public ArrayList<Integer> botMove(Board board) {
 
-        delay(2);
+        delay(2500);
         botTiles.clear();
         botFirstTileNumber = rnd.nextInt(9);
         botSecondTileNumber = rnd.nextInt(9);
@@ -42,12 +42,13 @@ public class Bot {
     }
 
     public int botEntangleMove(Board board) {
-        delay(3);
+        delay(2500);
         botEntangledTiles.clear();
         chosenTileIndex = rnd.nextInt(board.entangledTilesList.size());
         while (!validateChosenTile(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile(), board)) {
             chosenTileIndex = rnd.nextInt(board.entangledTilesList.size());
         }
+        System.out.println("entangled tile chosen: " + board.entangledTilesList.get(chosenTileIndex).getNumberOfTile());
 
         chooseEntangledMark(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile(), board);
         board.resolveEntanglement(chosenMark,
@@ -98,7 +99,7 @@ public class Bot {
 
     public void delay(int delayTime) {
         try {
-            TimeUnit.SECONDS.sleep(delayTime);
+            TimeUnit.MILLISECONDS.sleep(delayTime);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

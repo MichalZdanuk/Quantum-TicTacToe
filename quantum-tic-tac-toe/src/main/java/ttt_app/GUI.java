@@ -276,7 +276,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             buttonListInner.get(i).setEnabled(true);
 
         }
-        infoLabel.setText("Player X Turn");
+        infoLabel.setText("Player x Turn");
         hideInnerButtons();
     }
 
@@ -336,21 +336,20 @@ public class GUI extends WindowAdapter implements ActionListener {
                 numberOfMove = 0;
 
                 if (gameBoard.player == false) {
-                    infoLabel.setText("Player X Turn");
+                    infoLabel.setText("Player x Turn");
                     mark = 'x';
                 } else if (gameBoard.player == true) {
-                    infoLabel.setText("Player O Turn");
+                    infoLabel.setText("Player o Turn");
                     mark = 'o';
                 }
                 chosenTiles.clear();
 
-                if (gameMode == "single") {
+                if (gameMode == "single") {// maybe now not usefull
                     lockAllTiles();
                 }
             }
 
             if (gameBoard.checkIfIsEntanglement()) {
-                infoLabel.setText("<html>Entanglement occured: player " + mark + " move</html>");
                 lockAllTiles();
                 colorEntangledTiles();
                 resolvingEntanglementFlag = true;
@@ -391,7 +390,7 @@ public class GUI extends WindowAdapter implements ActionListener {
 
     private static void refreshBoard(int botEntngledTile) {
         infoLabel.setText("<html> ENTANGLEMENT: BOT CHOSEN " + botEntngledTile + " TILE </html>");
-        bot.delay(1);
+        bot.delay(1000);
     }
 
     static ArrayList<Integer> botTiles;
@@ -433,17 +432,21 @@ public class GUI extends WindowAdapter implements ActionListener {
     private static void playGame() {
         while (!gameBoard.checkIfWinner() && !gameBoard.checkIfDraw()) {
             if (gameMode == "single" && mark == 'o') {
-                lockAllTiles();
+                bot.delay(500);
                 System.out.println("inside bot");
-                if (gameBoard.isEntanglement) {
+                if (gameBoard.roundNumber == 1) {
+                    continue;
+                }
+                lockAllTiles();
+                if (resolvingEntanglementFlag) {
                     botEntngledTile = bot.botEntangleMove(gameBoard);
                     refreshBoard(botEntngledTile);
                     buttonList.get(botEntngledTile).setBackground(new Color(70, 122, 38));
-                    bot.delay(2);
+                    bot.delay(2000);
                     colorColapsedTiles();
                     resolvingEntanglementFlag = false;
-                    infoLabel.setText("Player O Turn");
-                } else if (!gameBoard.isEntanglement) {
+                    infoLabel.setText("Player o Turn");
+                } else if (!resolvingEntanglementFlag) {
                     botTiles = bot.botMove(gameBoard);
                     gameBoard.changePlayer();
                     for (int i = 0; i < 9; i++) {
@@ -456,12 +459,12 @@ public class GUI extends WindowAdapter implements ActionListener {
                             }
                         }
                     }
-                    infoLabel.setText("Player X Turn");
+                    infoLabel.setText("Player x Turn");
                     mark = 'x';
+                    gameBoard.checkIfIsEntanglement();
                 }
-
                 unlockAllTiles();
-                gameBoard.checkIfIsEntanglement();
+
             } else if (gameMode == "single" && mark == 'x') {
                 if (gameBoard.isEntanglement) {
                     lockAllTiles();
@@ -491,6 +494,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             if (gameMode == "single" && mark == 'o') {
                 buttonList.get(gameBoard.entangledTilesList.get(i).getNumberOfTile()).setEnabled(false);
             }
+            infoLabel.setText("<html>entanglement occured: " + mark + " move</html>");
             gameBoard.isEntanglement = true;
         }
     }
@@ -542,12 +546,18 @@ public class GUI extends WindowAdapter implements ActionListener {
         }
     }
 
+    static String winnerText;
+
     private static void informAboutWin() {
-        infoLabel.setText("<html>Congratulations to player " + gameBoard.whoIsWinner()
-                + " who has won!!!</html>");
+        if (gameMode == "single" && gameBoard.whoIsWinner() == 'o') {
+            winnerText = "BOT HAS WON";
+        } else {
+            winnerText = "<html>Congratulations to player " + gameBoard.whoIsWinner()
+                    + " who has won!!!</html>";
+        }
+        infoLabel.setText(winnerText);
         JOptionPane.showMessageDialog(frame,
-                "Congratulations to player " + gameBoard.whoIsWinner()
-                        + " who has won!!!",
+                winnerText,
                 "WINNER",
                 JOptionPane.INFORMATION_MESSAGE);
         for (int i = 0; i < 9; i++) {
