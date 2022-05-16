@@ -61,6 +61,15 @@ public class GUI extends WindowAdapter implements ActionListener {
     private static Color backGroundColapsed = new Color(175, 249, 201);
     private static Bot bot;
     private static String gameMode = "multi";
+    private static Character mark = 'x';
+    private static int numberOfMove = 0;
+    private static String textOnButton = "";
+    private ArrayList<Integer> chosenTiles = new ArrayList<Integer>(0);
+    private static boolean resolvingEntanglementFlag = false;
+    private ImageIcon closeIcon = new ImageIcon(System.getProperty("user.dir") + "\\graphics\\quit.png");
+    private static String winnerText;
+    private static ArrayList<Integer> botChosenTiles;
+    private static int botChosenEntngledTile;
 
     GUI(Board givenBoard) {
         restart = new JMenuItem("restart");
@@ -191,7 +200,6 @@ public class GUI extends WindowAdapter implements ActionListener {
 
         }
 
-        // inner buttons
         buttonListInner = new ArrayList<JButton>();
         for (int i = 0; i < 9; i++) {
             number = Integer.toString(i);
@@ -212,14 +220,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(chosenEntangledTile));
 
                     colorColapsedTiles();
-
-                    // unlock other tiles
-                    for (int i = 0; i < 9; i++) {
-                        if (!gameBoard.tileList.get(i).checkIfTileColapsed()) {
-                            buttonList.get(i).setEnabled(true);
-                        }
-                    }
-
+                    unlockAllTiles();
                     hideInnerButtons();
 
                     infoLabel.setText("Player " + gameBoard.whichPlayerTurn() + " Move");
@@ -238,8 +239,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             panel.add(buttonListInner.get(i));
         }
 
-        Image icon = Toolkit.getDefaultToolkit().getImage(
-                "C:\\Users\\Michal\\Desktop\\SEM_IV\\Projekt_indywidualny\\Quantum-TicTacToe\\quantum-tic-tac-toe\\graphics\\x.png");
+        Image icon = Toolkit.getDefaultToolkit().getImage(System.getProperty("user.dir") + "\\graphics\\x.png");
 
         frame.setIconImage(icon);
         frame.setLayout(new GridLayout(3, 4, 7, 7));
@@ -248,8 +248,72 @@ public class GUI extends WindowAdapter implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
 
-    ImageIcon closeIcon = new ImageIcon(
-            "C:\\Users\\Michal\\Desktop\\SEM_IV\\Projekt_indywidualny\\Quantum-TicTacToe\\quantum-tic-tac-toe\\graphics\\quit.png");
+    public void actionPerformed(ActionEvent e) {
+        clickClip.start();
+        clickClip.setMicrosecondPosition(0);
+        if (!resolvingEntanglementFlag) {
+            textOnButton = mark + Integer.toString(gameBoard.getRoundNumber());
+
+            for (int i = 0; i < buttonList.size(); i++) {
+                if (e.getSource() == buttonList.get(i)) {
+                    buttonList.get(i).setText(buttonList.get(i).getText() + " " + textOnButton);
+                    buttonList.get(i).setEnabled(false);
+                    chosenTiles.add(i);
+                    numberOfMove++;
+                    break;
+                }
+            }
+
+            if (numberOfMove == 2) {
+                gameBoard.makeMove(chosenTiles, "multi");
+                for (int i = 0; i < chosenTiles.size(); i++) {
+                    buttonList.get(chosenTiles.get(i)).setEnabled(true);
+                }
+                chosenTiles.clear();
+                changeMark();
+                gameBoard.changePlayer();
+                numberOfMove = 0;
+
+                if (gameBoard.player == false) {
+                    infoLabel.setText("Player x Move");
+                    mark = 'x';
+                } else if (gameBoard.player == true) {
+                    infoLabel.setText("Player o Move");
+                    mark = 'o';
+                }
+            }
+
+            if (gameBoard.checkIfIsEntanglement()) {
+                lockAllTiles();
+                colorEntangledTiles();
+                resolvingEntanglementFlag = true;
+            }
+
+        } else {
+            for (int i = 0; i < buttonList.size(); i++) {
+                if (e.getSource() == buttonList.get(i)) {
+                    chosenEntangledTile = i;
+                    break;
+                }
+            }
+            hideInnerButtons();
+
+            for (int i = 0; i < gameBoard.marksInEntanglementList.size(); i++) {
+                for (int j = 0; j < gameBoard.tileList.get(chosenEntangledTile).marklist.size(); j++) {
+                    if (gameBoard.marksInEntanglementList.get(i)
+                            .markSyntax().equals(gameBoard.tileList.get(chosenEntangledTile).marklist.get(j)
+                                    .markSyntax())) {
+                        buttonListInner.get(i).setVisible(true);
+                        textOnButton = gameBoard.marksInEntanglementList.get(i).markSyntax();
+                        buttonListInner.get(i).setText(textOnButton);
+                        break;
+                    }
+                }
+            }
+
+            lockNotEntangledTiles();
+        }
+    }
 
     public void windowClosing(WindowEvent e) {
         int a = JOptionPane.showConfirmDialog(frame, "Are you sure to close game?", "Close game",
@@ -258,6 +322,16 @@ public class GUI extends WindowAdapter implements ActionListener {
         if (a == JOptionPane.YES_OPTION) {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
+    }
+
+    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        configureSounds();
+        gameBoard = new Board();
+        new GUI(gameBoard);
+        while (true) {
+            playGame();
+        }
+
     }
 
     private static void restartGame() {
@@ -304,114 +378,12 @@ public class GUI extends WindowAdapter implements ActionListener {
         }
     }
 
-    private static Character mark = 'x';
-    private static int numberOfMove = 0;
-    private static String text = "";
-    private ArrayList<Integer> chosenTiles = new ArrayList<Integer>(0);
-    private static boolean resolvingEntanglementFlag = false;
-
-    public void actionPerformed(ActionEvent e) {
-        clickClip.start();
-        clickClip.setMicrosecondPosition(0);
-        if (!resolvingEntanglementFlag) {
-            text = mark + Integer.toString(gameBoard.getRoundNumber());
-
-            for (int i = 0; i < buttonList.size(); i++) {
-                if (e.getSource() == buttonList.get(i)) {
-                    buttonList.get(i).setText(buttonList.get(i).getText() + " " + text);
-                    buttonList.get(i).setEnabled(false);
-                    chosenTiles.add(i);
-                    numberOfMove++;
-                    break;
-                }
-            }
-
-            if (numberOfMove == 2) {
-                gameBoard.makeMove(chosenTiles, "multi");
-                for (int i = 0; i < chosenTiles.size(); i++) {
-                    buttonList.get(chosenTiles.get(i)).setEnabled(true);
-                }
-                changeMark();
-                gameBoard.changePlayer();
-                numberOfMove = 0;
-
-                if (gameBoard.player == false) {
-                    infoLabel.setText("Player x Move");
-                    mark = 'x';
-                } else if (gameBoard.player == true) {
-                    infoLabel.setText("Player o Move");
-                    mark = 'o';
-                }
-                chosenTiles.clear();
-
-                if (gameMode == "single") {// maybe now not usefull
-                    lockAllTiles();
-                }
-            }
-
-            if (gameBoard.checkIfIsEntanglement()) {
-                lockAllTiles();
-                colorEntangledTiles();
-                resolvingEntanglementFlag = true;
-            }
-
-        } else {
-            for (int i = 0; i < buttonList.size(); i++) {
-                if (e.getSource() == buttonList.get(i)) {
-                    chosenEntangledTile = i;
-                    break;
-                }
-            }
-            hideInnerButtons();
-
-            for (int i = 0; i < gameBoard.marksInEntanglementList.size(); i++) {
-                for (int j = 0; j < gameBoard.tileList.get(chosenEntangledTile).marklist.size(); j++) {
-                    if (gameBoard.marksInEntanglementList.get(i)
-                            .markSyntax().equals(gameBoard.tileList.get(chosenEntangledTile).marklist.get(j)
-                                    .markSyntax())) {
-                        buttonListInner.get(i).setVisible(true);
-                        text = gameBoard.marksInEntanglementList.get(i).markSyntax();
-                        buttonListInner.get(i).setText(text);
-                        break;
-                    }
-                }
-            }
-
-            // block other tile buttons
-            for (int i = 0; i < buttonList.size(); i++) {
-                if (!gameBoard.tileList.get(i).checkIfTileEntangled()) {
-                    buttonList.get(i).setEnabled(false);
-                }
-            }
-
-        }
-
-    }
-
-    private static void refreshBoard(int botEntngledTile) {
-        infoLabel.setText("<html> ENTANGLEMENT: BOT CHOSEN " + botEntngledTile + " TILE </html>");
-        bot.delay(1000);
-    }
-
-    static ArrayList<Integer> botTiles;
-    static int botEntngledTile;
-
-    private void changeMark() {
+    private static void changeMark() {
         if (mark == 'x') {
             mark = 'o';
         } else if (mark == 'o') {
             mark = 'x';
         }
-    }
-
-    public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-        configureSounds();
-        gameBoard = new Board();
-        new GUI(gameBoard);
-        while (true) {
-            playGame();
-        }
-
     }
 
     private static void configureSounds() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
@@ -439,26 +411,27 @@ public class GUI extends WindowAdapter implements ActionListener {
     private static void playGame() {
         while (!gameBoard.checkIfWinner() && !gameBoard.checkIfDraw()) {
             if (gameMode == "single" && mark == 'o') {
-                bot.delay(500);
                 System.out.println("inside bot");
                 if (gameBoard.roundNumber == 1) {
                     continue;
                 }
                 lockAllTiles();
+                bot.delay(500);
                 if (resolvingEntanglementFlag) {
-                    botEntngledTile = bot.botEntangleMove(gameBoard);
-                    refreshBoard(botEntngledTile);
-                    buttonList.get(botEntngledTile).setBackground(new Color(70, 122, 38));
+                    botChosenEntngledTile = bot.botEntangleMove(gameBoard);
+                    infoLabel.setText("<html> ENTANGLEMENT: BOT CHOSEN " + botChosenEntngledTile + " TILE </html>");
+                    bot.delay(1000);
+                    buttonList.get(botChosenEntngledTile).setBackground(new Color(70, 122, 38));
                     bot.delay(2000);
                     colorColapsedTiles();
                     resolvingEntanglementFlag = false;
                     infoLabel.setText("Player o Move");
-                } else if (!resolvingEntanglementFlag) {
-                    botTiles = bot.botMove(gameBoard);
+                } else {
+                    botChosenTiles = bot.botMove(gameBoard);
                     gameBoard.changePlayer();
                     for (int i = 0; i < 9; i++) {
-                        for (int j = 0; j < botTiles.size(); j++) {
-                            if (i == botTiles.get(j)) {
+                        for (int j = 0; j < botChosenTiles.size(); j++) {
+                            if (i == botChosenTiles.get(j)) {
                                 buttonList.get(i)
                                         .setText(
                                                 buttonList.get(i).getText() + " " + "o"
@@ -467,7 +440,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                         }
                     }
                     infoLabel.setText("Player x Move");
-                    mark = 'x';
+                    changeMark();
                     gameBoard.checkIfIsEntanglement();
                 }
                 unlockAllTiles();
@@ -488,7 +461,6 @@ public class GUI extends WindowAdapter implements ActionListener {
             informAboutDraw();
         }
         restartGame();
-
     }
 
     private static void colorEntangledTiles() {
@@ -518,6 +490,14 @@ public class GUI extends WindowAdapter implements ActionListener {
                         .setForeground(foreGround);
                 buttonList.get(gameBoard.tileList.get(i).getNumberOfTile())
                         .setFont(new Font("", Font.BOLD, 80));
+            }
+        }
+    }
+
+    private void lockNotEntangledTiles() {
+        for (int i = 0; i < buttonList.size(); i++) {
+            if (!gameBoard.tileList.get(i).checkIfTileEntangled()) {
+                buttonList.get(i).setEnabled(false);
             }
         }
     }
@@ -553,8 +533,6 @@ public class GUI extends WindowAdapter implements ActionListener {
         }
     }
 
-    static String winnerText;
-
     private static void informAboutWin() {
         if (gameMode == "single" && gameBoard.whoIsWinner() == 'o') {
             winnerText = "BOT HAS WON";
@@ -571,5 +549,4 @@ public class GUI extends WindowAdapter implements ActionListener {
             buttonList.get(i).setEnabled(false);
         }
     }
-
 }
