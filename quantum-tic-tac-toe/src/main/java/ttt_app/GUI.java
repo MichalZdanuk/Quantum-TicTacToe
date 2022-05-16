@@ -37,7 +37,8 @@ public class GUI extends WindowAdapter implements ActionListener {
     private static ArrayList<JButton> buttonList;
     private static ArrayList<JButton> buttonListInner;
     private String number;
-    private static JLabel infoLabel = new JLabel("Player X Move", SwingConstants.CENTER);
+    private static JLabel infoLabel = new JLabel("<html>WELCOME TO TIC TAC TOE Player X Move</html>",
+            SwingConstants.CENTER);
     private JLabel emptyLabel = new JLabel();
     private static Clip clip;
     private static Clip clickClip;
@@ -404,28 +405,35 @@ public class GUI extends WindowAdapter implements ActionListener {
     }
 
     public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-        File file = new File("backgroundMusic.wav");
-        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
-        clip = AudioSystem.getClip();
-        clip.open(audioStream);
-
-        File fileClick = new File("clickSound.wav");
-        AudioInputStream clickStream = AudioSystem.getAudioInputStream(fileClick);
-        clickClip = AudioSystem.getClip();
-        clickClip.open(clickStream);
-
-        File fileEntanglement = new File("entanglementSound.wav");
-        AudioInputStream entanglementStream = AudioSystem.getAudioInputStream(fileEntanglement);
-        entanglementClip = AudioSystem.getClip();
-        entanglementClip.open(entanglementStream);
+        configureSounds();
         gameBoard = new Board();
-        clip.start();
-        clip.loop(6);
         new GUI(gameBoard);
         while (true) {
             playGame();
         }
 
+    }
+
+    private static void configureSounds() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        String pathToBackgroundMusic = System.getProperty("user.dir") + "\\sounds\\backgroundMusic.wav";
+        File file = new File(pathToBackgroundMusic);
+        AudioInputStream audioStream = AudioSystem.getAudioInputStream(file);
+        clip = AudioSystem.getClip();
+        clip.open(audioStream);
+
+        String pathToClickSound = System.getProperty("user.dir") + "\\sounds\\clickSound.wav";
+        File fileClick = new File(pathToClickSound);
+        AudioInputStream clickStream = AudioSystem.getAudioInputStream(fileClick);
+        clickClip = AudioSystem.getClip();
+        clickClip.open(clickStream);
+
+        String pathToEntanglementSound = System.getProperty("user.dir") + "\\sounds\\entanglementSound.wav";
+        File fileEntanglement = new File(pathToEntanglementSound);
+        AudioInputStream entanglementStream = AudioSystem.getAudioInputStream(fileEntanglement);
+        entanglementClip = AudioSystem.getClip();
+        entanglementClip.open(entanglementStream);
+        clip.start();
+        clip.loop(6);
     }
 
     private static void playGame() {
