@@ -59,6 +59,7 @@ public class GUI extends WindowAdapter implements ActionListener {
     private Color backGroundSecond = new Color(42, 77, 20);
     private static Color backGroundEntangled = new Color(103, 224, 163);
     private static Color backGroundColapsed = new Color(175, 249, 201);
+    private static Color botChosenTile = new Color(70, 122, 38);
     private static Bot bot;
     private static String gameMode = "multi";
     private static Character mark = 'x';
@@ -109,6 +110,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                 backGroundSecond = new Color(63, 6, 6);
                 backGroundEntangled = new Color(232, 58, 20);
                 backGroundColapsed = new Color(217, 206, 63);
+                botChosenTile = new Color(100, 131, 129);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
@@ -120,6 +122,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                 backGroundSecond = new Color(12, 45, 72);
                 backGroundEntangled = new Color(116, 189, 203);
                 backGroundColapsed = new Color(177, 212, 224);
+                botChosenTile = new Color(100, 131, 129);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
@@ -131,6 +134,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                 backGroundSecond = new Color(42, 77, 20);
                 backGroundEntangled = new Color(103, 224, 163);
                 backGroundColapsed = new Color(175, 249, 201);
+                botChosenTile = new Color(70, 122, 38);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
@@ -142,6 +146,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                 backGroundSecond = new Color(179, 104, 0);
                 backGroundEntangled = new Color(255, 250, 0);
                 backGroundColapsed = new Color(179, 139, 0);
+                botChosenTile = new Color(255, 191, 70);
                 setThemeColor(foreGround, backGround, backGroundSecond, backGroundEntangled, backGroundColapsed);
             }
         });
@@ -411,40 +416,37 @@ public class GUI extends WindowAdapter implements ActionListener {
     private static void playGame() {
         while (!gameBoard.checkIfWinner() && !gameBoard.checkIfDraw()) {
             if (gameMode == "single" && mark == 'o') {
-                System.out.println("inside bot");
-                if (gameBoard.roundNumber == 1) {
-                    continue;
-                }
                 lockAllTiles();
                 bot.delay(500);
                 if (resolvingEntanglementFlag) {
                     botChosenEntngledTile = bot.botEntangleMove(gameBoard);
                     infoLabel.setText("<html> ENTANGLEMENT: BOT CHOSEN " + botChosenEntngledTile + " TILE </html>");
                     bot.delay(1000);
-                    buttonList.get(botChosenEntngledTile).setBackground(new Color(70, 122, 38));
+                    buttonList.get(botChosenEntngledTile).setBackground(botChosenTile);
                     bot.delay(2000);
                     colorColapsedTiles();
                     resolvingEntanglementFlag = false;
                     infoLabel.setText("Player O Move");
                 } else {
-                    botChosenTiles = bot.botMove(gameBoard);
-                    gameBoard.changePlayer();
-                    for (int i = 0; i < 9; i++) {
-                        for (int j = 0; j < botChosenTiles.size(); j++) {
-                            if (i == botChosenTiles.get(j)) {
-                                buttonList.get(i)
-                                        .setText(
-                                                buttonList.get(i).getText() + " " + "o"
-                                                        + (gameBoard.getRoundNumber() - 1));
+                    if (gameBoard.roundNumber != 1) {
+                        botChosenTiles = bot.botMove(gameBoard);
+                        gameBoard.changePlayer();
+                        for (int i = 0; i < 9; i++) {
+                            for (int j = 0; j < botChosenTiles.size(); j++) {
+                                if (i == botChosenTiles.get(j)) {
+                                    buttonList.get(i)
+                                            .setText(
+                                                    buttonList.get(i).getText() + " " + "o"
+                                                            + (gameBoard.getRoundNumber() - 1));
+                                }
                             }
                         }
+                        infoLabel.setText("Player X Move");
+                        changeMark();
+                        gameBoard.checkIfIsEntanglement();
                     }
-                    infoLabel.setText("Player X Move");
-                    changeMark();
-                    gameBoard.checkIfIsEntanglement();
+                    unlockAllTiles();
                 }
-                unlockAllTiles();
-
             } else if (gameMode == "single" && mark == 'x') {
                 if (gameBoard.isEntanglement) {
                     lockAllTiles();
