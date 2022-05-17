@@ -13,9 +13,9 @@ Good luck!!!
 Below example of a game in terminal version:
 
 
-![Screenshot](ezgif.com-gif-maker.gif)
+https://user-images.githubusercontent.com/76063659/168901767-f8e7e2c9-1654-43eb-b53c-75cd0a9b4a72.mp4
 
 Below example of a game in GUI version:
 
 
-https://user-images.githubusercontent.com/76063659/164328090-917c4435-8a67-45b6-9113-4e92f6f25307.mp4
+https://user-images.githubusercontent.com/76063659/168901713-6c165540-818d-4f9d-ad39-ed0d4905db24.mp4
