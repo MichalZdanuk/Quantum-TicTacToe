@@ -2,7 +2,6 @@ package ttt_app;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +15,7 @@ public class Board {
     public ArrayList<Tile> entangledTilesList = new ArrayList<Tile>(0);
     public ArrayList<Mark> marksInEntanglementList = new ArrayList<Mark>(0);
     private ArrayList<Tile> availableTiles = new ArrayList<Tile>(0);
-    public boolean isEntanglement = false; // temporary changed to public
+    public boolean isEntanglement = false;
     private Tile nextTile;
     private ArrayList<Integer> numbersList;
     private Character processedPlayer;
@@ -26,10 +25,6 @@ public class Board {
     private Tile connectedTile;
     private ArrayList<Mark> usedMarks = new ArrayList<Mark>();
     public boolean isMistake = false;
-
-    private int botFirstTile;
-    private int botSecondTile;
-    private Random rnd = new Random();
 
     Board() {
         setBoard();
@@ -173,21 +168,21 @@ public class Board {
                 if (!tileList.get(0 + j * 3).checkIfTileColapsed()) {
                     (tileList.get(0 + j * 3)).printMarkLine(i);
                 } else {
-                    System.out.print("     " + tileList.get(0 + j * 3).getBigMark().printColapsed() + "     ");
+                    System.out.print("     " + tileList.get(0 + j * 3).getBigMark().markSyntax() + "     ");
                 }
                 System.out.print("|");
 
                 if (!tileList.get(1 + j * 3).checkIfTileColapsed()) {
                     (tileList.get(1 + j * 3)).printMarkLine(i);
                 } else {
-                    System.out.print("     " + tileList.get(1 + j * 3).getBigMark().printColapsed() + "     ");
+                    System.out.print("     " + tileList.get(1 + j * 3).getBigMark().markSyntax() + "     ");
                 }
                 System.out.print("|");
 
                 if (!tileList.get(2 + j * 3).checkIfTileColapsed()) {
                     (tileList.get(2 + j * 3)).printMarkLine(i);
                 } else {
-                    System.out.print("     " + tileList.get(2 + j * 3).getBigMark().printColapsed() + "     ");
+                    System.out.print("     " + tileList.get(2 + j * 3).getBigMark().markSyntax() + "     ");
                 }
                 System.out.print("|");
                 System.out.println();
@@ -201,6 +196,8 @@ public class Board {
         player = !player;
     }
 
+    Bot bot = new Bot();
+
     public void makeMove(String mode) {
         isMistake = false;
         Character character = ((player == false) ? 'x' : 'o');
@@ -208,53 +205,48 @@ public class Board {
             System.out.println("--------BOT MOVE--------");
         }
         System.out.println("It's " + roundNumber + " move.");
-        System.out.println("It's player " + whichPlayerTurn() + " turn");
+        System.out.println("It's player " + ((player == false) ? 'X' : 'O') + " turn");
         System.out.println("Please choose the tile (0-8):");
 
         if (mode.equals("multi") || (mode.equals("single") && (roundNumber % 2 == 1))) {
             String firstScanned = scanner.nextLine();
             String secondScanned = scanner.nextLine();
-
-            if (firstScanned.length() != 1 && firstScanned.length() != 1) {
-                System.out.println("Please give a number between 0 and 8!");
-                isMistake = true;
-                return;
-            }
-
-            boolean flag = Character.isDigit(firstScanned.charAt(0)) && Character.isDigit(secondScanned.charAt(0));
-            if (!flag) {
-                System.out.println("Please give a digit between 0 and 8!");
-                isMistake = true;
-                return;
-            }
-
-            int chosenFirstTile = Integer.parseInt(firstScanned);
-            int chosenSecondTile = Integer.parseInt(secondScanned);
-            if (!validateGivenTiles(chosenFirstTile, chosenSecondTile, mode)) {
-                isMistake = true;
-                return;
-            }
-
-            if (!checkIfChosenTileIsFull(chosenFirstTile, mode) && !checkIfChosenTileIsFull(chosenSecondTile, mode)) {
-                (tileList.get(chosenFirstTile)).putMark(new Mark(character, roundNumber));
-                (tileList.get(chosenSecondTile)).putMark(new Mark(character, roundNumber));
-                roundNumber++;
-            }
+            validateMove(firstScanned, secondScanned, mode, character);
         } else if (mode.equals("single")) {
-            delay();
-            botFirstTile = rnd.nextInt(9);
-            botSecondTile = rnd.nextInt(9);
-            while (!validateGivenTiles(botFirstTile, botSecondTile, mode)
-                    && !checkIfChosenTileIsFull(botFirstTile, mode)
-                    && !checkIfChosenTileIsFull(botSecondTile, mode)) {
-                botFirstTile = rnd.nextInt(9);
-                botSecondTile = rnd.nextInt(9);
-            }
-            (tileList.get(botFirstTile)).putMark(new Mark(character, roundNumber));
-            (tileList.get(botSecondTile)).putMark(new Mark(character, roundNumber));
-            roundNumber++;
-
+            bot.botMove(this);
         }
+    }
+
+    private boolean validateMove(String firstScanned, String secondScanned, String mode, Character character) {
+        if (firstScanned.length() != 1 && firstScanned.length() != 1) {
+            System.out.println("Please give a number between 0 and 8!");
+            isMistake = true;
+            return false;
+        }
+
+        boolean isDigitFlag = Character.isDigit(firstScanned.charAt(0)) && Character.isDigit(secondScanned.charAt(0));
+        if (!isDigitFlag) {
+            System.out.println("Please give a digit between 0 and 8!");
+            isMistake = true;
+            return false;
+        }
+
+        int chosenFirstTileIndex = Integer.parseInt(firstScanned);
+        int chosenSecondTileIndex = Integer.parseInt(secondScanned);
+        if (!validateGivenTiles(chosenFirstTileIndex, chosenSecondTileIndex, mode)) {
+            isMistake = true;
+            return false;
+        }
+
+        if (!checkIfChosenTileIsFull(chosenFirstTileIndex, mode)
+                && !checkIfChosenTileIsFull(chosenSecondTileIndex, mode)) {
+            (tileList.get(chosenFirstTileIndex)).putMark(new Mark(character, roundNumber));
+            (tileList.get(chosenSecondTileIndex)).putMark(new Mark(character, roundNumber));
+            roundNumber++;
+            return true;
+        }
+
+        return false;
     }
 
     public boolean validateGivenTiles(int chosenFirstTile, int chosenSecondTile, String mode) {
@@ -518,10 +510,6 @@ public class Board {
         }
     }
 
-    public Character whichPlayerTurn() {
-        return ((player == false) ? 'x' : 'o');
-    }
-
     public int isBot() {
         return ((player == false) ? 0 : 1);
     }
@@ -546,7 +534,7 @@ public class Board {
         return roundNumber;
     }
 
-    public void makeMove(ArrayList<Integer> listFromGUI, String mode) {
+    public void makeMove(ArrayList<Integer> listFromGUI) {
         isMistake = false;
         Character character = ((player == false) ? 'x' : 'o');
 

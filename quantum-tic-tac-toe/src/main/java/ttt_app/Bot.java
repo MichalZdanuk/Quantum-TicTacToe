@@ -19,7 +19,6 @@ public class Bot {
     }
 
     public ArrayList<Integer> botMove(Board board) {
-
         delay(2500);
         botTiles.clear();
         botFirstTileNumber = rnd.nextInt(9);
@@ -35,9 +34,6 @@ public class Bot {
         (board.tileList.get(botFirstTileNumber)).putMark(new Mark('o', board.getRoundNumber()));
         (board.tileList.get(botSecondTileNumber)).putMark(new Mark('o', board.getRoundNumber()));
         board.roundNumber++;
-
-        System.out.println("Bot First tile: " + botFirstTileNumber);
-        System.out.println("Bot Second tile: " + botSecondTileNumber);
         return botTiles;
     }
 
@@ -48,7 +44,8 @@ public class Bot {
         while (!validateChosenTile(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile(), board)) {
             chosenTileIndex = rnd.nextInt(board.entangledTilesList.size());
         }
-        System.out.println("entangled tile chosen: " + board.entangledTilesList.get(chosenTileIndex).getNumberOfTile());
+        System.out.println(
+                "Bot has chosen entangled tile: " + board.entangledTilesList.get(chosenTileIndex).getNumberOfTile());
 
         chooseEntangledMark(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile(), board);
         board.resolveEntanglement(chosenMark,
@@ -57,7 +54,6 @@ public class Bot {
     }
 
     private boolean validateChosenTile(int givenIndex, Board board) {
-
         ArrayList<Integer> listOfNumbersToCheck = board.entangledTilesNumbers();
         for (int i = 0; i < board.getSize(); i++) {
             if (listOfNumbersToCheck.get(i) == givenIndex) {
@@ -68,7 +64,6 @@ public class Bot {
     }
 
     private void chooseEntangledMark(int tile, Board board) {
-        System.out.println("bot choosing mark");
         chosenMarkIndex = rnd.nextInt(board.tileList.get(tile).marklist.size());
         while (!isMarkEntangled(chosenMarkIndex, board)) {
             chosenMarkIndex = rnd.nextInt(board.tileList.get(tile).marklist.size());
@@ -82,11 +77,6 @@ public class Bot {
     }
 
     private boolean isMarkEntangled(int markToBeChecked, Board board) {
-        System.out.println("checking chosen mark");
-        System.out
-                .println("chosen mark to be checked: "
-                        + board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()).marklist
-                                .get(markToBeChecked).markSyntax());
         for (Mark mark : board.marksInEntanglementList) {
             if (mark.markSyntax()
                     .equals(board.tileList.get(board.entangledTilesList.get(chosenTileIndex).getNumberOfTile()).marklist

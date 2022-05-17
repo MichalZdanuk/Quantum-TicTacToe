@@ -223,7 +223,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     unlockAllTiles();
                     hideInnerButtons();
 
-                    infoLabel.setText("Player " + gameBoard.whichPlayerTurn() + " Move");
+                    infoLabel.setText("Player " + ((gameBoard.player == false) ? 'X' : 'O') + " Move");
                     resolvingEntanglementFlag = false;
 
                     entanglementClip.start();
@@ -265,7 +265,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             }
 
             if (numberOfMove == 2) {
-                gameBoard.makeMove(chosenTiles, "multi");
+                gameBoard.makeMove(chosenTiles);
                 for (int i = 0; i < chosenTiles.size(); i++) {
                     buttonList.get(chosenTiles.get(i)).setEnabled(true);
                 }
@@ -275,10 +275,10 @@ public class GUI extends WindowAdapter implements ActionListener {
                 numberOfMove = 0;
 
                 if (gameBoard.player == false) {
-                    infoLabel.setText("Player x Move");
+                    infoLabel.setText("Player X Move");
                     mark = 'x';
                 } else if (gameBoard.player == true) {
-                    infoLabel.setText("Player o Move");
+                    infoLabel.setText("Player O Move");
                     mark = 'o';
                 }
             }
@@ -350,7 +350,7 @@ public class GUI extends WindowAdapter implements ActionListener {
             buttonListInner.get(i).setEnabled(true);
 
         }
-        infoLabel.setText("Player x Move");
+        infoLabel.setText("Player X Move");
         hideInnerButtons();
     }
 
@@ -425,7 +425,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                     bot.delay(2000);
                     colorColapsedTiles();
                     resolvingEntanglementFlag = false;
-                    infoLabel.setText("Player o Move");
+                    infoLabel.setText("Player O Move");
                 } else {
                     botChosenTiles = bot.botMove(gameBoard);
                     gameBoard.changePlayer();
@@ -439,7 +439,7 @@ public class GUI extends WindowAdapter implements ActionListener {
                             }
                         }
                     }
-                    infoLabel.setText("Player x Move");
+                    infoLabel.setText("Player X Move");
                     changeMark();
                     gameBoard.checkIfIsEntanglement();
                 }

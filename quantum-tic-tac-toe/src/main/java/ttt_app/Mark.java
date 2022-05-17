@@ -27,14 +27,6 @@ public class Mark {
         }
     }
 
-    public String print() {
-        return "{" + Character.toString(mark) + "" + Integer.toString(moveNumber) + "}";
-    }
-
-    public String printColapsed() {
-        return Character.toString(mark) + "" + Integer.toString(moveNumber);
-    }
-
     public String markSyntax() {
         markSyntax = mark + "" + moveNumber;
         return markSyntax;

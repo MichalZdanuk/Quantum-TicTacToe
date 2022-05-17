@@ -9,7 +9,7 @@ public class Game {
     private static String chosenTile = "";
     private static String chosenMark = "";
     private static String mode = "";
-    private static int index;
+    private static Bot bot = new Bot();
     static Random rnd = new Random();
 
     public static void main(String[] args) {
@@ -24,45 +24,34 @@ public class Game {
             gameBoard.displayBoard();
             if (gameBoard.checkIfIsEntanglement()) {
                 gameBoard.changePlayer();
-                if ((mode.equals("single") && (gameBoard.isBot() == 1))) {
+                if ((mode.equals("single") && (gameBoard.player == true))) {
                     System.out.println("--------BOT MOVE--------");
                 }
-                System.out.println("Player " + gameBoard.whichPlayerTurn() + " turn");
+                System.out.println("Player " + ((gameBoard.player == false) ? 'x' : 'o') + " turn");
                 System.out.print("Entanglement occured! ");
                 gameBoard.printChainOfTiles();
                 System.out.println("Please choose one from entangled tiles: ");
                 gameBoard.printListOfEntangledTiles();
                 System.out.print("\n");
-                if (mode.equals("multi") || (mode.equals("single") && (gameBoard.isBot() == 0))) {
+                if (mode.equals("multi") || (mode.equals("single") && (gameBoard.player == false))) {
                     chosenTile = scanner.nextLine();
                     while (!validateChosenTile(chosenTile, gameBoard)) {
                         System.out.print("You' ve chosen wrong tile! Chose one from: ");
                         gameBoard.printListOfEntangledTiles();
-                        System.out.print("\n");
+                        System.out.println();
                         chosenTile = scanner.nextLine();
                     }
-                } else if (mode.equals("single")) {
-                    index = rnd.nextInt(gameBoard.entangledTilesList.size());
-                    chosenTile = Integer.toString(gameBoard.entangledTilesList.get(index).getNumberOfTile());
-                    while (!validateChosenTile(chosenTile, gameBoard)) {
-                        index = rnd.nextInt(gameBoard.entangledTilesList.size());
-                        chosenTile = Integer.toString(gameBoard.entangledTilesList.get(index).getNumberOfTile());
-                    }
-                    gameBoard.delay();
-                    System.out.println("Bot has chosen: " + chosenTile);
-                }
 
-                System.out.println();
-                System.out.println("Choose a mark to be collapsed on tile: " + chosenTile + " from");
-                for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
-                    for (Mark markInEntanglement : gameBoard.marksInEntanglementList) {
-                        if (mark.markSyntax().equals(markInEntanglement.markSyntax())) {
-                            System.out.print(" {" + markInEntanglement.markSyntax() + "}");
+                    System.out.println();
+                    System.out.println("Choose a mark to be collapsed on tile: " + chosenTile + " from");
+                    for (Mark mark : gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist) {
+                        for (Mark markInEntanglement : gameBoard.marksInEntanglementList) {
+                            if (mark.markSyntax().equals(markInEntanglement.markSyntax())) {
+                                System.out.print(" {" + markInEntanglement.markSyntax() + "}");
+                            }
                         }
                     }
-                }
-                System.out.println();
-                if (mode.equals("multi") || (mode.equals("single") && ((gameBoard.isBot() == 0)))) {
+                    System.out.println();
                     chosenMark = scanner.nextLine();
                     while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)),
                             gameBoard)) {
@@ -74,29 +63,22 @@ public class Game {
                                 }
                             }
                         }
-                        System.out.print("\n");
+                        System.out.println();
                         chosenMark = scanner.nextLine();
                     }
-                } else if (mode.equals("single")) {
-                    index = rnd.nextInt(gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.size());
-                    chosenMark = gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.get(index)
-                            .markSyntax();
-                    while (!validateChosenMark(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)),
-                            gameBoard)) {
-                        index = rnd
-                                .nextInt(gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.size());
-                        chosenMark = gameBoard.tileList.get(Integer.parseInt(chosenTile)).marklist.get(index)
-                                .markSyntax();
-
+                    gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)));
+                    gameBoard.changePlayer();
+                } else if (mode.equals("single") && (gameBoard.player = true)) {
+                    bot.botEntangleMove(gameBoard);
+                    bot.delay(1500);
+                    gameBoard.displayBoard();
+                    if (gameBoard.checkIfWinner() || gameBoard.checkIfDraw()) {
+                        break;
                     }
-
-                    gameBoard.delay();
-                    System.out.println("Bot has chosen: " + chosenMark);
+                    gameBoard.makeMove("single");
                 }
 
-                gameBoard.resolveEntanglement(chosenMark, gameBoard.tileList.get(Integer.parseInt(chosenTile)));
                 gameBoard.displayBoard();
-                gameBoard.changePlayer();
             }
             if (!gameBoard.isMistake) {
                 gameBoard.changePlayer();
@@ -167,7 +149,6 @@ public class Game {
             System.out.println("Chosen wrong mode choose: single or multi");
             mode = scanner.nextLine();
         }
-
     }
 
     private static boolean validateMode(String mode) {
