@@ -10,7 +10,6 @@ public class Tile {
     public ArrayList<Mark> marklist;
     private Mark bigValue;
     private int numberOfTile;
-    // private String printedMarks = "";
 
     Tile(int numberOfTile) {
         isColapsed = false;
@@ -27,6 +26,7 @@ public class Tile {
 
     public void setBigMark(Character mark, int moveNumber) {
         bigValue = new Mark(mark, moveNumber);
+        isEmpty = false;
     }
 
     public Mark getBigMark() {

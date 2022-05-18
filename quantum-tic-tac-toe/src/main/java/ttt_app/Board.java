@@ -217,7 +217,7 @@ public class Board {
         }
     }
 
-    private boolean validateMove(String firstScanned, String secondScanned, String mode, Character character) {
+    public boolean validateMove(String firstScanned, String secondScanned, String mode, Character character) {
         if (firstScanned.length() != 1 && firstScanned.length() != 1) {
             System.out.println("Please give a number between 0 and 8!");
             isMistake = true;
