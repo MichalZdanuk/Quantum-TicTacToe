@@ -21,7 +21,7 @@ public class BotTest {
     }
 
     @Test
-    public void shouldCorrectlyMakeOnBoardWithAlreadySetBigMarks() {
+    public void shouldCorrectlyMakeOnBoardWithCollaspedTiles() {
         Board board = new Board();
         Bot bot = new Bot();
         board.tileList.get(0).setCollapse();
@@ -74,6 +74,31 @@ public class BotTest {
         board.tileList.get(8).putMark(new Mark('o', 2));
         board.tileList.get(8).putMark(new Mark('x', 3));
         int expectedNumberOfColapsedTiles = 3;
+        int actualNumberOfColapsedTiles = 0;
+        if (board.checkIfIsEntanglement()) {
+            bot.botEntangleMove(board);
+        }
+        for (int i = 0; i < board.tileList.size(); i++) {
+            if (board.tileList.get(i).checkIfTileColapsed()) {
+                actualNumberOfColapsedTiles++;
+            }
+        }
+        assertEquals(expectedNumberOfColapsedTiles, actualNumberOfColapsedTiles);
+    }
+
+    @Test
+    public void shouldCorrectlyMakeEntangledMoveCase3() {
+        Board board = new Board();
+        Bot bot = new Bot();
+        board.tileList.get(3).putMark(new Mark('x', 1));
+        board.tileList.get(3).putMark(new Mark('o', 4));
+        board.tileList.get(6).putMark(new Mark('x', 1));
+        board.tileList.get(6).putMark(new Mark('o', 2));
+        board.tileList.get(5).putMark(new Mark('x', 3));
+        board.tileList.get(5).putMark(new Mark('o', 4));
+        board.tileList.get(8).putMark(new Mark('o', 2));
+        board.tileList.get(8).putMark(new Mark('x', 3));
+        int expectedNumberOfColapsedTiles = 4;
         int actualNumberOfColapsedTiles = 0;
         if (board.checkIfIsEntanglement()) {
             bot.botEntangleMove(board);
