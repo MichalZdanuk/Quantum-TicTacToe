@@ -343,6 +343,7 @@ public class GUI extends WindowAdapter implements ActionListener {
         gameBoard = new Board();
         mark = 'x';
         numberOfMove = 0;
+        resolvingEntanglementFlag = false;
         clip.loop(6);
         for (int i = 0; i < 9; i++) {
             buttonList.get(i).setText("");
