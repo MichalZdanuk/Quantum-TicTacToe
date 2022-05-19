@@ -1,0 +1,195 @@
+\documentclass{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage[normalem]{ulem}
+\usepackage{subcaption}
+\usepackage{float}
+
+\useunder{\uline}{\ul}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{Michał Żdanuk}
+\fancyhead[RE,LO]{Sprawozdanie końcowe: \texttt{Kwantowe Kółko i Krzyżyk} }
+\fancyfoot[CE,CO]{\leftmark}
+\fancyfoot[LE,RO]{\thepage}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+\rfoot{Strona \thepage \hspace{1pt} z \pageref{LastPage}}
+
+
+
+\begin{document}
+
+\begin{titlepage}
+   \begin{center}
+        \vspace*{1cm}
+        \Large    
+        \textbf{Sprawozdanie końcowe: \texttt{Kwantowe Kółko i Krzyżyk}}
+            
+        \vspace{1.5cm}
+
+       \textbf{Michał Żdanuk}
+
+       \vfill
+            
+       \vspace{0.8cm}
+     
+       \includegraphics[width=0.4\textwidth]{pw}
+            
+       Wydział Elektryczny\\
+       Politechnika Warszawska\\
+       Maj 2022\\
+       \vspace{0.8cm}
+        \small
+
+   \end{center}
+   
+\end{titlepage}
+\newpage
+\setcounter{page}{2}
+
+\section{Cel dokumentu}
+\subsection{Przeznaczenie dokumentu}
+Dokument powstał, by podsumować wszelkie prace związane z realizacją projektu indywidualnego (gry konsolowej poszerzonej o możliwość gry z interfejsem graficznym) - "Kwantowe Kółko i Krzyżyk". Gra została napisana w języku JAVA (openjdk version 17.0.2   2022-01-18), kładąc szczególny nacisk na zasady programowania obiektowego (tzn. abstrakcji, hermetyzacji). Sprawozdanie zawiera kompleksowy opis sposobu realizacji projektu oraz wnioski wyciągnięte po skończeniu prac.
+
+\subsection{Organizacja dokumentu}
+Dokument zawiera:
+\begin{itemize}
+    \item wprowadzenie, które wyjaśnia co było celem projektu
+    \item krótki opis modyfikacji wprowadzonych w projekcie względem pierwotnych założeń
+    \item zwięzły opis aktualnego stanu projektu
+    \item opis metod testowania
+    \item podsumowanie całego projektu
+\end{itemize}
+\subsection{Dokumenty powiązane}
+Dokument ten związany jest z utworzonymi na początku projektu (pierwszy tydzień prac tzn. 02.03.2022 - 09.03.2022) dokumentami: \textbf{specyfikacją implementacyjną oraz specyfikacją funkcjonalną}. W tym dokumencie będę odnosić się do nich, opisując jakie założenia udało się zrealizować, problemy napotkane przy realizacji projektu, a także wszelkie modyfikacje względem wstępnych założeń.
+
+\section{Wprowadzenie}
+Celem projektu było napisanie gry w języku JAVA, która pozwoliłaby dwóm graczom (przy jednym urządzeniu) zagrać w znacznie bardziej zaawansowaną wersję wszystkim dobrze znanej gry Kółko i Krzyżyk. Co więcej, gra posiada opcję trybu gry "single" pozwalającą zagrać przeciwko bot'owi wykonującemu losowe, dozwolone ruchy. Poza aspektem technicznym zależało mi na tym, by gra była miła dla oka. W związku z tym dołożyłem starań i udało mi się wykonać wersję graficzną (okienkową). Ograniczenia czasowe nie pozwoliły na "idealne dopieszczenie" wszystkich aspektów, jednakże gra spełnia wszystkie przyjęte wymagania, kod jest poprawny, a aplikację udało się wzbogacić o dodatkowe funkcjonalności.
+
+\section{Modyfikacje}
+W toku pisania projektu przeszedł on kilka modyfikacji. Zmieniła się przede wszystkich hierarchia klas. Grę wzbogacono o wersję graficzną. W tym celu korzystałem z biblioteki Swing.
+
+\subsection{Hierarchia klas}
+Zaprojektowanie odpowiedniej hierarchii klas okazało się zadaniem znacznie trudniejszym, niż początkowo mnie się wydawało. Względem tego, co przedstawiłem w \textbf{Specyfikacji implementacyjnej} w sekcji 4 (Opis zdefiniowanych klas) oraz 5 (Diagram klas) wprowadziłem następujące zmiany:
+\begin{itemize}
+    \item zrezygnowanie z klasy Player - jedyne informacje jakie potrzebuję o graczu to tylko określenie, który aktualnie wykonuje ruch - można to rozwiązać po prostu jedną zmienną
+    \item wprowadzenie klasy GUI - uznałem za bardzo ważne wzbogacenie gry o interfejs graficzny, zbudowana jest ona w oparciu o bibliotekę Swing
+    \item wprowadzenie klasy Bot - która ma metody do obsługi ruchów przez komputer (wcześniej fragmenty kodu odpowiadające za to występowały wewnątrz klas Game oraz GUI)
+\end{itemize}    
+Poza wymienionymi zmianami większość mechanizmów gry została przeniesiona z klasy Game do klasy Board, tak by tylko jedna klasa zawierała logikę ruchów. Zmianie uległ również sposób wyświetlania planszy w wersji terminalowej gry.
+
+\subsection{Wersja graficzna gry}
+W trakcie trwania projektu uznałem za obowiązek wzbogacić grę w wersję graficzną. Gra w wersji konsolowej nie jest zbyt intuicyjna dla zwykłego gracza i nie sprawia tyle przyjemności co ta w wersji graficznej. Do realizacji tej wersji gry skorzystałem z bardzo prostej biblioteki, jaką jest Swing. Stwierdziłem, że do wykonania tej gry najlepszym rozwiązaniem będzie skorzystanie z prostego i intuicyjnego narzędzia, jakim jest biblioteka Swing. Biblioteka jest w pełni darmowa, by korzystać z niej wystarczy wyłącznie importować interesujące nas odpowiednie struktury.
+
+\section{Aktualny stan projektu}
+Udało się zrealizować wszystkie wymagania - do poprawy pozostała jedynie drobna optymalizacja kodu. Przeprowadzone zostały testy jednostkowe najbardziej istotnych metod. Po zakończeniu semestru i sesji egzaminacyjnej planowane jest rozwinięcie gry o możliwość gry z botem o wyższym stopniu trudności. Poniżej zaprezentuję instrukcję jak uruchomić grę we własnym środowisku oraz krótki opis korzystania z aplikacji.
+
+\subsection{Uruchomienie projektu w Visual Studio Code}
+W celu sprawnego wdrożenia aplikacji na własne urządzenie zalecam skorzystać z poniższej instrukcji.\\
+\textbf{Instrukcja wdrożenia aplikacji na własnym urządzeniu (na systemie Windows):}
+\begin{itemize}
+    \item należy upewnić się, że na komputerze w VSC zainstalowane jest pakiet rozszerzeń \textbf{Extension Pack for Java}
+    \item W konsoli przechodzimy do interesującej nas lokalizacji, tworzymy folder np. mkdir tic-tac-toe
+    \item przechodzimy do katalogu
+    \item klonujemy zawartość repozytorium poleceniem:\\
+    \textbf{git clone https://github.com/MichalZdanuk/Quantum-TicTacToe.git}
+    \item uruchamiamy Visual Studio Code, klikamy przycisk "Open Folder", wskazujemy na ścieżkę do katalogu quantum-tic-tac-toe ze sklonowanego repozytorium w naszym folderze\\
+    (przykładowo: \texttt{D:\BS User:\BS Desktop\BS ttt\BS Quantum-TicTacToe\BS quantum-tic-tac-toe}) i wciskamy "Choose folder",
+    \item by gre uruchomić w wersji konsolowej wybieramy klasę Game.java, następnie wciskamy \textbf{CTRL+F5}
+    \item by gre uruchomić w wersji graficznej (okienkowej) wybieramy klasę GUI.java, następnie wciskamy \textbf{CTRL+F5}
+\end{itemize}
+
+\subsection{Uruchomienie pliku .jar}
+W repozytorium w folderze quantum-tic-tac-toe umieściłem wykonywalne archiwum .jar. Można je uruchomić, klikając dwukrotnie na plik i wybierając (\emph{Otwórz za pomocą...}) uruchomienie za pomocą aplikacji Javy.\\
+Program można również uruchomić przez konsolę za pomocą polecenia: \textbf{java -jar ttt.jar} lub wersja konsolowa \textbf{java -jar ttt-console.jar}
+
+\subsection{Uruchomienie pliku .exe}
+W repozytorium w folderze quantum-tic-tac-toe znajduje się także plik ttt.exe. Należy utworzyć jego skrót, klikając na niego prawym przyciskiem myszy "\emph{Utwórz skrót}" i wybrać interesującą nas lokalizację. Teraz grę możemy uruchomić podwójnym kliknięciem myszki na ikonkę gry.
+
+\newpage
+\subsection{Instrukcja obsługi}
+Po wykonaniu instrukcji wdrożeniowej powinniśmy ujrzeć okienko główne gry.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{MainMenu.png}\\
+\caption{zrzut ekranu prezentujący okno główne gry "Kwantowe Kółko i Krzyżyk"}
+\end{figure}
+
+Do dyspozycji mamy cztery przyciski w pasku głównym, górnej części ekranu. Każdy przycisk zawiera rozwijaną listę przycisków odpowiadających za odpowiednie funkcje. Przycisk \textbf{"GAME"} zawiera rozwijamy przycisk restart - resetujący całą rozgrywkę, wracając do stanu początkowego przy włączaniu gry. Przycisk \textbf{"MODE"} posiada dwa tryby "single" - włączenie gry przeciwko botowi oraz "multi" - umożliwiający grę dwóch graczy. Domyślnie gra, przy włączaniu ustawiana jest na tryb "multi". Przycisk \textbf{"THEME"} zawiera cztery przyciski "blue", "red", "green", "orange" umożliwiające ustawienie motywu kolorystycznego grafiki okienka. Domyślnie przy uruchomieniu włączony jest motyw "green". Ostatni przycisk \textbf{"HELP"} zawiera opcję "rules", która po wciśnięciu otworzy dodatkowe okienko informacyjne z zasadami gry.
+\newpage
+
+\begin{figure}[ht]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{greenTheme.png}  
+  \caption{motyw zielony}
+  \label{fig:sub-first}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{blueTheme.png}  
+  \caption{motyw niebieski}
+  \label{fig:sub-second}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{redTheme.png}  
+  \caption{motyw czerwony}
+  \label{fig:sub-first}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{orangeTheme.png}  
+  \caption{motyw pomarańczowy}
+  \label{fig:sub-second}
+\end{subfigure}
+\caption{Zrzut ekranu prezentujący warianty kolorystyczne gry}
+\label{fig:fig}
+\end{figure}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{gameRules.png}\\
+\caption{zrzut ekranu prezentujący wyskakujące okno z zasadami gry}
+\end{figure}
+
+\newpage
+Po wciśnięciu ikony X w prawym górnym oknie wyskoczy okno informacyjne z zapytaniem, czy na pewno chcemy wyłączyć gre.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{closeWindow.png}\\
+\caption{zrzut ekranu prezentujący wyskakujące okno z zapytaniem o zamknięcie gry}
+\end{figure}
+
+\section{Metody testowania programu}
+Testy przeprowadzone zostały za pomocą biblioteki JUnit. Przetestowałem najbardziej krytyczne metody. Głównym sposobem weryfikacji poprawności działania mechanizmów gry okazały się testy statystyczne (po napisaniu większych fragmentów kodu) oraz dynamiczne - zwłaszcza pod koniec projektu i przy tworzeniu interfejsu graficznego. 
+
+\subsection{Testy jednostkowe}
+Do przeprowadzenia testów jednostokowych  wykorzystałem bibliotekę JUnit. Przetestowałem klasę Board.java , która jest najbardziej złożona - odpowiada za całą logikę "plątania" i "zapadania się" (patrz \textbf{specyfikacja funkcjonalna}), klasę Tile.java, by sprawdzić poprawną konfigurację stanu pola po wykonaniu operacji oraz Bot.java w celu weryfikacji poprawności generacji ruchów wykonywanych przez bot'a.
+Przetestowane zostały również przypadki podania błędnych danych - przypadek, gdy gramy w wersji konsolowej.
+
+\newpage
+\section{Podsumowanie i wnioski końcowe}
+Pracę nad projektem rozpocząłem 2 marca 2022 roku - po spotkaniu organizacyjnym z opiekunem projektu, a zakończyłem 19 maja. Okres niespełna trzech miesięcy to niedużo, jednak zdążyłem rozwinąć swoje umiejętności związane z programowaniem obiektowym oraz zdobyć kolejne doświadczenie praktyczne pod kątem prowadzenia małego projektu. Pogłębiłem swoją wiedzę o języku Java.
+
+\subsection{Sukcesy}
+Szczególnie zadowolony jestem z tego, że moja gra \textbf{"Kwantowe Kółko i Krzyżyk"} została wzbogacona o możliwość gry z interfejsem graficznym. Po ukończeniu podstawowej wersji graficznej gry, z tygodnia na tydzień wzbogacałem ją o kolejne małe dodatki. Tym sposobem gra została wzbogacona o, chociażby kilka motywów kolorystycznych, czy wyskakujące okienko informacyjne z zasadami gry.
+
+\subsection{Samokrytyka i wnioski}
+Moja praca mogła być niewątpliwie bardziej wydajna i sprawniejsza. Cenną nauczką na przyszłość okazało się, że na okres planowania architektury rozwiązania i stworzenie specyfikacji implementacyjnej i funkcjonalnej należy poświęcić więcej czasu (w moim przypadku na ten etap poświęciłem tylko tydzień). Bardzo szybko wyszły wszelkie niedokładności specyfikacji i należało na nowo przemyśleć architekturę. Powstały kod jest poprawny, jednakże należałoby poświęcić jeszcze czas na dodatkową refaktoryzację (szczególnie "nieelegancko" wykonana została metoda sprawdzająca wygranego gry, przeglądając po kolei wszystkie możliwe kombinacje).\\
+Zdalne repozytorium GIT'a było bardzo przydatnym narzędziem, które pozwoliło mi na kontrolowanie wprowadzanych zmian i stworzyło przestrzeń do przechowywania kopii kodu.\\
+Testy automatyczne są bardzo ważne. Jako założenie obrałem, że będą one powstawały na bieżąco przy tworzeniu nowych funkcjonalności. Niestety powstały one pod koniec projektu, gdy cała funkcjonalność była gotowa. Realizacji testów w trakcie tworzenia funkcjonalności pomogłaby w sprawniejszym wykrywaniu błędów.\\\\
+Podsumowując, projekt był bardzo ciekawy i pożyteczny, a pisanie go sprawiło przyjemność i satysfakcję.
+\end{document}
